@@ -1,9 +1,11 @@
 package com.eduortza.api.application.service.BlogPost;
 
+import com.eduortza.api.application.exception.FileManagerException;
 import com.eduortza.api.application.exception.StoreException;
 import com.eduortza.api.application.port.in.BlogPost.create.CreateBlogPostCommand;
 import com.eduortza.api.application.port.in.BlogPost.create.CreateBlogPostPort;
 import com.eduortza.api.application.port.out.BlogPost.StoreBlogPostPort;
+import com.eduortza.api.application.port.out.FilePort;
 import com.eduortza.api.domain.BlogPost;
 import jakarta.transaction.Transactional;
 
@@ -15,9 +17,11 @@ import com.eduortza.api.common.UseCase;
 public class CreateBlogPostService implements CreateBlogPostPort {
 
     private final StoreBlogPostPort storeBlogPostPort;
+    private final FilePort filePort;
 
-    public CreateBlogPostService(StoreBlogPostPort storeBlogPostPort) {
+    public CreateBlogPostService(StoreBlogPostPort storeBlogPostPort, FilePort filePort) {
         this.storeBlogPostPort = storeBlogPostPort;
+        this.filePort = filePort;
     }
 
     @Transactional
@@ -32,8 +36,12 @@ public class CreateBlogPostService implements CreateBlogPostPort {
         blogPost.setMinutesToRead(createBlogPostCommand.getMinutesToRead());
         blogPost.setCreated(new Date());
 
-        //TO DO: subir la imagen a un servidor y guardar la url
-
+        try{
+            String fileName = filePort.saveFile(createBlogPostCommand.getImage(), "src/main/resources/static/images");
+            blogPost.setImageUrl("images/" + fileName);
+        } catch (Exception e) {
+            throw new FileManagerException("Error while trying to store image", e);
+        }
 
         try {
             return storeBlogPostPort.store(blogPost);

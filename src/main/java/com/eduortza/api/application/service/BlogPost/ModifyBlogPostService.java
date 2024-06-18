@@ -4,19 +4,24 @@ import com.eduortza.api.application.exception.StoreException;
 import com.eduortza.api.application.port.in.BlogPost.modify.ModifyBlogPostCommand;
 import com.eduortza.api.application.port.in.BlogPost.modify.ModifyBlogPostPort;
 import com.eduortza.api.application.port.out.BlogPost.UpdateBlogPostPort;
+import com.eduortza.api.application.port.out.FilePort;
 import com.eduortza.api.common.UseCase;
 import com.eduortza.api.domain.BlogPost;
 import jakarta.transaction.Transactional;
+
+import java.io.File;
+import java.util.SplittableRandom;
 
 
 @UseCase
 public class ModifyBlogPostService implements ModifyBlogPostPort {
 
     private final UpdateBlogPostPort updateBlogPostPort;
+    private final FilePort filePort;
 
-    public ModifyBlogPostService(UpdateBlogPostPort updateBlogPostPort) {
+    public ModifyBlogPostService(UpdateBlogPostPort updateBlogPostPort, FilePort filePort) {
         this.updateBlogPostPort = updateBlogPostPort;
-
+        this.filePort = filePort;
     }
 
     @Transactional
@@ -45,7 +50,15 @@ public class ModifyBlogPostService implements ModifyBlogPostPort {
             blogPost.setMinutesToRead(modifyBlogPostCommand.getMinutesToRead());
         }
 
-        // TO DO: subir la imagen a un servidor y guardar la url
+        if (modifyBlogPostCommand.getImage() != null) {
+            try {
+                filePort.deleteFile("src/main/resources/static/" + blogPost.getImageUrl());
+                String fileName = filePort.saveFile(modifyBlogPostCommand.getImage(), "src/main/resources/static/images");
+                blogPost.setImageUrl("images/" + fileName);
+            } catch (Exception e) {
+                throw new StoreException("Error while trying to store image", e);
+            }
+        }
 
 
         try {

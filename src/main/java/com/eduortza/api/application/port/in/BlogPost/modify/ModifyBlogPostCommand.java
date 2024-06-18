@@ -4,6 +4,8 @@ import com.eduortza.api.domain.BlogPost;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.io.File;
+
 @Data
 @AllArgsConstructor
 public class ModifyBlogPostCommand {
@@ -12,6 +14,6 @@ public class ModifyBlogPostCommand {
         private String content;
         private String description;
         private Number minutesToRead;
-        private String image;
+        private File image;
         private BlogPost originalPost;
 }

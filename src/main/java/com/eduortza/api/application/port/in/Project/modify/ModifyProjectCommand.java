@@ -12,7 +12,7 @@ public class ModifyProjectCommand {
     private String title;
     private String content;
     private String description;
-    private File imageUrl;
+    private File image;
     private String githubUrl;
     private Project originalProject;
 

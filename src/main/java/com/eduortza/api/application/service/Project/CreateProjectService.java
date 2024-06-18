@@ -1,7 +1,9 @@
 package com.eduortza.api.application.service.Project;
 
+import com.eduortza.api.application.exception.FileManagerException;
 import com.eduortza.api.application.port.in.Project.create.CreateProjectCommand;
 import com.eduortza.api.application.port.in.Project.create.CreateProjectPort;
+import com.eduortza.api.application.port.out.FilePort;
 import com.eduortza.api.application.port.out.Project.StoreProjectPort;
 import com.eduortza.api.common.UseCase;
 import com.eduortza.api.domain.Project;
@@ -14,9 +16,11 @@ import java.util.Date;
 public class CreateProjectService implements CreateProjectPort {
 
     private final StoreProjectPort storeProjectPort;
+    private final FilePort filePort;
 
-    public CreateProjectService(StoreProjectPort storeProjectPort) {
+    public CreateProjectService(StoreProjectPort storeProjectPort, FilePort filePort) {
         this.storeProjectPort = storeProjectPort;
+        this.filePort = filePort;
     }
 
     @Transactional
@@ -31,7 +35,13 @@ public class CreateProjectService implements CreateProjectPort {
             project.setGithubUrl(createProjectCommand.getGithubUrl());
             project.setCreated(new Date());
 
-            //TO DO: subir la imagen a un servidor y guardar la url
+
+            try {
+                String fileName = filePort.saveFile(createProjectCommand.getImage(), "src/main/resources/static/images");
+                project.setImageUrl("images/" + fileName);
+            } catch (Exception e) {
+                throw new FileManagerException("Error while trying to store image", e);
+            }
 
             try {
                 return storeProjectPort.store(project);
