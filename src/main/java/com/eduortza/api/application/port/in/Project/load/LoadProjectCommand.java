@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class LoadProjectCommand {
-    private Long projectId;
+    private long id;
 }

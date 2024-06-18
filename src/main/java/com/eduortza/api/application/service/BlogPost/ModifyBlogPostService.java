@@ -25,6 +25,10 @@ public class ModifyBlogPostService implements ModifyBlogPostPort {
 
         BlogPost blogPost = modifyBlogPostCommand.getOriginalPost();
 
+        if (blogPost == null) {
+            throw new NullPointerException("BlogPost is null");
+        }
+
         if (modifyBlogPostCommand.getTitle() != null) {
             blogPost.setTitle(modifyBlogPostCommand.getTitle());
         }

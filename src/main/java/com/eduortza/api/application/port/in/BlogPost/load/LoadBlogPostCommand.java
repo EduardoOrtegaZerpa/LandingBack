@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class LoadBlogPostCommand {
-    private Long id;
+    private long id;
 }

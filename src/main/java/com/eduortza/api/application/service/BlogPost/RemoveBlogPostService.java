@@ -17,7 +17,7 @@ public class RemoveBlogPostService implements RemoveBlogPostPort {
     @Transactional
     @Override
     public void removeBlogPost(RemoveBlogPostCommand removeBlogPostCommand) {
-        Long id = removeBlogPostCommand.getId();
+        long id = removeBlogPostCommand.getId();
         try {
             deleteBlogPostPort.delete(id);
         } catch (Exception e) {

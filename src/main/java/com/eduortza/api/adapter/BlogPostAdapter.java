@@ -23,7 +23,7 @@ public class BlogPostAdapter implements StoreBlogPostPort, UpdateBlogPostPort, D
     }
     
     @Override
-    public void delete(Long id) {
+    public void delete(long id) {
 
     }
 
@@ -33,7 +33,7 @@ public class BlogPostAdapter implements StoreBlogPostPort, UpdateBlogPostPort, D
     }
 
     @Override
-    public BlogPost get(Long id) {
+    public BlogPost get(long id) {
         return null;
     }
 

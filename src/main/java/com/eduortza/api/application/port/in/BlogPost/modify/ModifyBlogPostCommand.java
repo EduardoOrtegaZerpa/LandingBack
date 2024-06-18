@@ -8,7 +8,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class ModifyBlogPostCommand {
 
-        private Long id;
         private String title;
         private String content;
         private String description;

@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class RemoveBlogPostCommand {
-    private Long id;
+    private long id;
 }
