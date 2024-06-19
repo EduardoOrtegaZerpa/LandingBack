@@ -2,7 +2,6 @@ package com.eduortza.api.application.service.BlogPost;
 
 import com.eduortza.api.application.exception.DeleteException;
 import com.eduortza.api.application.exception.FileManagerException;
-import com.eduortza.api.application.port.in.BlogPost.remove.RemoveBlogPostCommand;
 import com.eduortza.api.application.port.in.BlogPost.remove.RemoveBlogPostPort;
 import com.eduortza.api.application.port.out.BlogPost.DeleteBlogPostPort;
 import com.eduortza.api.application.port.out.BlogPost.GetBlogPostPort;

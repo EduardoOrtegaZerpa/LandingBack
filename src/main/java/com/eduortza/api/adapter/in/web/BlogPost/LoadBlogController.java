@@ -1,6 +1,7 @@
 package com.eduortza.api.adapter.in.web.BlogPost;
 
 import com.eduortza.api.adapter.exception.BlogPostException;
+import com.eduortza.api.adapter.exception.NonExistsException;
 import com.eduortza.api.domain.BlogPost;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,9 @@ public class LoadBlogController {
         try {
             BlogPost blogPost= loadBlogPostPort.loadBlogPost(id);
             return ResponseEntity.status(HttpStatus.OK).body(blogPost);
-        } catch (Exception e) {
+        } catch (NonExistsException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BlogPostException(e.getMessage()));
+        }  catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new BlogPostException(e.getMessage()));
         }
     }
@@ -38,7 +41,9 @@ public class LoadBlogController {
             List<BlogPost> blogPostList = StreamSupport.stream(blogPostIterator.spliterator(), false).toList();
 
             return ResponseEntity.status(HttpStatus.OK).body(blogPostList);
-        } catch (Exception e) {
+        } catch (NonExistsException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BlogPostException(e.getMessage()));
+        }  catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new BlogPostException(e.getMessage()));
         }
     }

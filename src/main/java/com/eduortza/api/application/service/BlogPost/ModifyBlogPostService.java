@@ -1,5 +1,6 @@
 package com.eduortza.api.application.service.BlogPost;
 
+import com.eduortza.api.application.exception.FileManagerException;
 import com.eduortza.api.application.exception.StoreException;
 import com.eduortza.api.application.port.in.BlogPost.modify.ModifyBlogPostCommand;
 import com.eduortza.api.application.port.in.BlogPost.modify.ModifyBlogPostPort;
@@ -59,7 +60,7 @@ public class ModifyBlogPostService implements ModifyBlogPostPort {
                 String fileName = filePort.saveFile(modifyBlogPostCommand.getImage(), "src/main/resources/static/images");
                 blogPost.setImageUrl("images/" + fileName);
             } catch (Exception e) {
-                throw new StoreException("Error while trying to store image", e);
+                throw new FileManagerException("Error while trying to store image", e);
             }
         }
 

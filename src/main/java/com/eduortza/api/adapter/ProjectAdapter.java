@@ -55,7 +55,7 @@ public class ProjectAdapter implements StoreProjectPort, UpdateProjectPort, Dele
     public Project store(Project project) {
 
         if (project == null) {
-            throw new RuntimeException("Project is null");
+            throw new NullPointerException("Project is null");
         }
 
         if (springProjectRepository.existsById(project.getId())) {
@@ -69,7 +69,7 @@ public class ProjectAdapter implements StoreProjectPort, UpdateProjectPort, Dele
     @Override
     public void update(Project project) {
         if (project == null) {
-            throw new RuntimeException("Project is null");
+            throw new NullPointerException("Project is null");
         }
 
         if (!springProjectRepository.existsById(project.getId())) {

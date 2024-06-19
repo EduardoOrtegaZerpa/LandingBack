@@ -54,7 +54,7 @@ public class BlogPostAdapter implements StoreBlogPostPort, UpdateBlogPostPort, D
     public BlogPost store(BlogPost blogPost) {
 
         if (blogPost == null) {
-            throw new RuntimeException("BlogPost is null");
+            throw new NullPointerException("BlogPost is null");
         }
 
         if (springBlogRepository.existsById(blogPost.getId())) {
@@ -68,7 +68,7 @@ public class BlogPostAdapter implements StoreBlogPostPort, UpdateBlogPostPort, D
     @Override
     public void update(BlogPost blogPost) {
         if (blogPost == null) {
-            throw new RuntimeException("BlogPost is null");
+            throw new NullPointerException("BlogPost is null");
         }
 
         if (!springBlogRepository.existsById(blogPost.getId())) {

@@ -1,5 +1,6 @@
 package com.eduortza.api.adapter.in.web.Project;
 
+import com.eduortza.api.adapter.exception.NonExistsException;
 import com.eduortza.api.adapter.exception.ProjectException;
 import com.eduortza.api.application.port.in.Project.remove.RemoveProjectPort;
 import org.springframework.http.HttpStatus;
@@ -22,8 +23,10 @@ public class RemoveProjectController {
         try {
             removeProjectPort.removeProject(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ProjectException(e.getMessage()));
+        } catch (NonExistsException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (ProjectException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
@@ -32,8 +35,10 @@ public class RemoveProjectController {
         try {
             removeProjectPort.removeAllProjects();
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ProjectException(e.getMessage()));
+        } catch (NonExistsException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (ProjectException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 

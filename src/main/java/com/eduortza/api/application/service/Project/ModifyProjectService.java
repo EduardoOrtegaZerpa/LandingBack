@@ -1,5 +1,6 @@
 package com.eduortza.api.application.service.Project;
 
+import com.eduortza.api.application.exception.FileManagerException;
 import com.eduortza.api.application.port.in.Project.modify.ModifyProjectCommand;
 import com.eduortza.api.application.port.in.Project.modify.ModifyProjectPort;
 import com.eduortza.api.application.port.out.FilePort;
@@ -55,7 +56,7 @@ public class ModifyProjectService implements ModifyProjectPort {
                      String fileName = filePort.saveFile(modifyProjectCommand.getImage(), "src/main/resources/static/images");
                      project.setImageUrl("images/" + fileName);
                  } catch (Exception e) {
-                     throw new StoreException("Error while trying to store image", e);
+                     throw new FileManagerException("Error while trying to store image", e);
                  }
             }
 

@@ -1,5 +1,6 @@
 package com.eduortza.api.adapter.in.web.Project;
 
+import com.eduortza.api.adapter.exception.NonExistsException;
 import com.eduortza.api.adapter.exception.ProjectException;
 import com.eduortza.api.application.port.in.Project.modify.ModifyProjectCommand;
 import org.springframework.http.HttpStatus;
@@ -24,8 +25,10 @@ public class ModifyProjectController {
         try {
             modifyProjectPort.modifyProject(id, command);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ProjectException(e.getMessage()));
+        } catch (NonExistsException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (ProjectException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 

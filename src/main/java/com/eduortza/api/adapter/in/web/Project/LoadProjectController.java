@@ -1,5 +1,6 @@
 package com.eduortza.api.adapter.in.web.Project;
 
+import com.eduortza.api.adapter.exception.NonExistsException;
 import com.eduortza.api.adapter.exception.ProjectException;
 import com.eduortza.api.application.port.in.Project.load.LoadProjectPort;
 import com.eduortza.api.domain.Project;
@@ -26,6 +27,8 @@ public class LoadProjectController {
         try {
             Project project = loadProjectPort.loadProject(id);
             return ResponseEntity.status(HttpStatus.OK).body(project);
+        } catch (NonExistsException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ProjectException(e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ProjectException(e.getMessage()));
         }
@@ -38,6 +41,8 @@ public class LoadProjectController {
             List<Project> projectList = StreamSupport.stream(projectIterator.spliterator(), false).toList();
 
             return ResponseEntity.status(HttpStatus.OK).body(projectList);
+        } catch (NonExistsException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ProjectException(e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ProjectException(e.getMessage()));
         }
