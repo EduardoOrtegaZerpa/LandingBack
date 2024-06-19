@@ -1,8 +1,6 @@
 package com.eduortza.api.adapter.in.web.BlogPost;
 
 import com.eduortza.api.adapter.exception.BlogPostException;
-import com.eduortza.api.adapter.out.persistence.entities.BlogPostEntity;
-import com.eduortza.api.adapter.out.persistence.mappers.BlogPostMapper;
 import com.eduortza.api.domain.BlogPost;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import com.eduortza.api.application.port.in.BlogPost.load.LoadBlogPostPort;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -28,8 +24,8 @@ public class LoadBlogController {
     @GetMapping("/blog/{id}")
     public ResponseEntity<Object> loadBlogPost(@PathVariable Long id) {
         try {
-            BlogPostEntity blogPostEntity = BlogPostMapper.mapToEntity(loadBlogPostPort.loadBlogPost(id));
-            return ResponseEntity.status(HttpStatus.OK).body(blogPostEntity);
+            BlogPost blogPost= loadBlogPostPort.loadBlogPost(id);
+            return ResponseEntity.status(HttpStatus.OK).body(blogPost);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new BlogPostException(e.getMessage()));
         }
