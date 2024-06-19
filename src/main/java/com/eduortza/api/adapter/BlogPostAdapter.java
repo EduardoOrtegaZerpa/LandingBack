@@ -1,6 +1,7 @@
 package com.eduortza.api.adapter;
 
 import com.eduortza.api.adapter.exception.AlreadyExistsException;
+import com.eduortza.api.adapter.exception.NonExistsException;
 import com.eduortza.api.adapter.out.persistence.entities.BlogPostEntity;
 import com.eduortza.api.adapter.out.persistence.mappers.BlogPostMapper;
 import com.eduortza.api.adapter.out.persistence.repository.SpringBlogRepository;
@@ -24,22 +25,29 @@ public class BlogPostAdapter implements StoreBlogPostPort, UpdateBlogPostPort, D
     
     @Override
     public void delete(long id) {
-
+        if (!springBlogRepository.existsById(id)) {
+            throw new NonExistsException("BlogPost with id " + id + " does not exist");
+        }
+        springBlogRepository.deleteById(id);
     }
 
     @Override
     public void deleteAll() {
-
+        springBlogRepository.deleteAll();
     }
 
     @Override
     public BlogPost get(long id) {
-        return null;
+        return springBlogRepository.findById(id)
+                .map(BlogPostMapper::mapToDomain)
+                .orElseThrow(() -> new NonExistsException("BlogPost with id " + id + " does not exist"));
     }
 
     @Override
     public List<BlogPost> getAll() {
-        return List.of();
+       return springBlogRepository.findAll().stream()
+               .map(BlogPostMapper::mapToDomain)
+               .toList();
     }
 
     @Override
@@ -59,6 +67,14 @@ public class BlogPostAdapter implements StoreBlogPostPort, UpdateBlogPostPort, D
 
     @Override
     public void update(BlogPost blogPost) {
+        if (blogPost == null) {
+            throw new RuntimeException("BlogPost is null");
+        }
 
+        if (!springBlogRepository.existsById(blogPost.getId())) {
+            throw new NonExistsException("BlogPost with id " + blogPost.getId() + " does not exist");
+        }
+
+        springBlogRepository.save(BlogPostMapper.mapToEntity(blogPost));
     }
 }

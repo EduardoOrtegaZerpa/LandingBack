@@ -1,6 +1,7 @@
 package com.eduortza.api.adapter;
 
 import com.eduortza.api.adapter.exception.AlreadyExistsException;
+import com.eduortza.api.adapter.exception.NonExistsException;
 import com.eduortza.api.adapter.out.persistence.entities.ProjectEntity;
 import com.eduortza.api.adapter.out.persistence.mappers.ProjectMapper;
 import com.eduortza.api.adapter.out.persistence.repository.SpringProjectRepository;
@@ -24,22 +25,30 @@ public class ProjectAdapter implements StoreProjectPort, UpdateProjectPort, Dele
 
     @Override
     public void delete(long id) {
+        if (!springProjectRepository.existsById(id)) {
+            throw new NonExistsException("Project with id " + id + " does not exist");
+        }
 
+        springProjectRepository.deleteById(id);
     }
 
     @Override
     public void deleteAll() {
-
+        springProjectRepository.deleteAll();
     }
 
     @Override
     public Project get(long id) {
-        return null;
+        return springProjectRepository.findById(id)
+                .map(ProjectMapper::mapToDomain)
+                .orElseThrow(() -> new NonExistsException("Project with id " + id + " does not exist"));
     }
 
     @Override
     public List<Project> getAll() {
-        return List.of();
+        return springProjectRepository.findAll().stream()
+                .map(ProjectMapper::mapToDomain)
+                .toList();
     }
 
     @Override
@@ -59,6 +68,14 @@ public class ProjectAdapter implements StoreProjectPort, UpdateProjectPort, Dele
 
     @Override
     public void update(Project project) {
+        if (project == null) {
+            throw new RuntimeException("Project is null");
+        }
 
+        if (!springProjectRepository.existsById(project.getId())) {
+            throw new NonExistsException("Project with id " + project.getId() + " does not exist");
+        }
+
+        springProjectRepository.save(ProjectMapper.mapToEntity(project));
     }
 }
