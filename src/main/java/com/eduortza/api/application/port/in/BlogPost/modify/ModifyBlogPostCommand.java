@@ -9,11 +9,9 @@ import java.io.File;
 @Data
 @AllArgsConstructor
 public class ModifyBlogPostCommand {
-
         private String title;
         private String content;
         private String description;
         private Number minutesToRead;
         private File image;
-        private BlogPost originalPost;
 }

@@ -3,6 +3,7 @@ package com.eduortza.api.application.service.BlogPost;
 import com.eduortza.api.application.exception.StoreException;
 import com.eduortza.api.application.port.in.BlogPost.modify.ModifyBlogPostCommand;
 import com.eduortza.api.application.port.in.BlogPost.modify.ModifyBlogPostPort;
+import com.eduortza.api.application.port.out.BlogPost.GetBlogPostPort;
 import com.eduortza.api.application.port.out.BlogPost.UpdateBlogPostPort;
 import com.eduortza.api.application.port.out.FilePort;
 import com.eduortza.api.common.UseCase;
@@ -18,17 +19,19 @@ public class ModifyBlogPostService implements ModifyBlogPostPort {
 
     private final UpdateBlogPostPort updateBlogPostPort;
     private final FilePort filePort;
+    private final GetBlogPostPort getBlogPostPort;
 
-    public ModifyBlogPostService(UpdateBlogPostPort updateBlogPostPort, FilePort filePort) {
+    public ModifyBlogPostService(UpdateBlogPostPort updateBlogPostPort, FilePort filePort, GetBlogPostPort getBlogPostPort) {
         this.updateBlogPostPort = updateBlogPostPort;
         this.filePort = filePort;
+        this.getBlogPostPort = getBlogPostPort;
     }
 
     @Transactional
     @Override
-    public void modifyBlogPost(ModifyBlogPostCommand modifyBlogPostCommand) {
+    public void modifyBlogPost(long id, ModifyBlogPostCommand modifyBlogPostCommand) {
 
-        BlogPost blogPost = modifyBlogPostCommand.getOriginalPost();
+        BlogPost blogPost = getBlogPostPort.get(id);
 
         if (blogPost == null) {
             throw new NullPointerException("BlogPost is null");

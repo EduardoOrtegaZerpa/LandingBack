@@ -1,13 +1,14 @@
 package com.eduortza.api.application.service.Project;
 
 import com.eduortza.api.application.exception.DeleteException;
-import com.eduortza.api.application.port.in.Project.remove.RemoveProjectCommand;
 import com.eduortza.api.application.port.in.Project.remove.RemoveProjectPort;
 import com.eduortza.api.application.port.out.FilePort;
 import com.eduortza.api.application.port.out.Project.DeleteProjectPort;
 import com.eduortza.api.application.port.out.Project.GetProjectPort;
+import com.eduortza.api.common.UseCase;
 import jakarta.transaction.Transactional;
 
+@UseCase
 public class RemoveProjectService implements RemoveProjectPort {
 
     private final DeleteProjectPort deleteProjectPort;
@@ -22,8 +23,7 @@ public class RemoveProjectService implements RemoveProjectPort {
 
     @Transactional
     @Override
-    public void removeProject(RemoveProjectCommand removeProjectCommand) {
-        long id = removeProjectCommand.getId();
+    public void removeProject(long id) {
         try {
             String imageUrl = getProjectPort.get(id).getImageUrl();
             filePort.deleteFile("src/main/resources/static/" + imageUrl);

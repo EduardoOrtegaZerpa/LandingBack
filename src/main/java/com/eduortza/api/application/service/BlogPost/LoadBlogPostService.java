@@ -1,12 +1,13 @@
 package com.eduortza.api.application.service.BlogPost;
 
 import com.eduortza.api.application.exception.LoadingException;
-import com.eduortza.api.application.port.in.BlogPost.load.LoadBlogPostCommand;
 import com.eduortza.api.application.port.in.BlogPost.load.LoadBlogPostPort;
 import com.eduortza.api.application.port.out.BlogPost.GetBlogPostPort;
+import com.eduortza.api.common.UseCase;
 import com.eduortza.api.domain.BlogPost;
 import jakarta.transaction.Transactional;
 
+@UseCase
 public class LoadBlogPostService implements LoadBlogPostPort {
 
     private final GetBlogPostPort getBlogPostPort;
@@ -17,9 +18,9 @@ public class LoadBlogPostService implements LoadBlogPostPort {
 
     @Transactional
     @Override
-    public BlogPost loadBlogPost(LoadBlogPostCommand command) {
+    public BlogPost loadBlogPost(Long id) {
         try {
-            return getBlogPostPort.get(command.getId());
+            return getBlogPostPort.get(id);
         } catch (Exception e) {
             throw new LoadingException("Error while trying to load from Database", e);
         }

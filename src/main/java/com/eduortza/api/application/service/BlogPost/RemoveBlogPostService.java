@@ -7,9 +7,10 @@ import com.eduortza.api.application.port.in.BlogPost.remove.RemoveBlogPostPort;
 import com.eduortza.api.application.port.out.BlogPost.DeleteBlogPostPort;
 import com.eduortza.api.application.port.out.BlogPost.GetBlogPostPort;
 import com.eduortza.api.application.port.out.FilePort;
+import com.eduortza.api.common.UseCase;
 import jakarta.transaction.Transactional;
 
-
+@UseCase
 public class RemoveBlogPostService implements RemoveBlogPostPort {
 
     private final DeleteBlogPostPort deleteBlogPostPort;
@@ -24,8 +25,7 @@ public class RemoveBlogPostService implements RemoveBlogPostPort {
 
     @Transactional
     @Override
-    public void removeBlogPost(RemoveBlogPostCommand removeBlogPostCommand) {
-        long id = removeBlogPostCommand.getId();
+    public void removeBlogPost(Long id) {
         try {
             String imageUrl = getBlogPostPort.get(id).getImageUrl();
             filePort.deleteFile(imageUrl);

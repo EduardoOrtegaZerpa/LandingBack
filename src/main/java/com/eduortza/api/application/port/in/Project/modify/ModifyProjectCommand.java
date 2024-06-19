@@ -14,6 +14,5 @@ public class ModifyProjectCommand {
     private String description;
     private File image;
     private String githubUrl;
-    private Project originalProject;
 
 }

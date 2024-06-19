@@ -3,10 +3,9 @@ package com.eduortza.api.adapter.in.web.BlogPost;
 
 import com.eduortza.api.adapter.exception.AlreadyExistsException;
 import com.eduortza.api.adapter.exception.BlogPostException;
-import com.eduortza.api.adapter.out.persistence.entities.BlogPostEntity;
-import com.eduortza.api.adapter.out.persistence.mappers.BlogPostMapper;
 import com.eduortza.api.application.port.in.BlogPost.create.CreateBlogPostCommand;
 import com.eduortza.api.application.port.in.BlogPost.create.CreateBlogPostPort;
+import com.eduortza.api.domain.BlogPost;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,8 +24,8 @@ public class CreateBlogController {
     @PostMapping("/blog")
     public ResponseEntity<Object> createBlogPost(@RequestBody CreateBlogPostCommand createBlogPostCommand) {
         try {
-            BlogPostEntity blogPostEntity = BlogPostMapper.mapToEntity(createBlogPostPort.createBlogPost(createBlogPostCommand));
-            return ResponseEntity.status(HttpStatus.CREATED).body(blogPostEntity);
+            BlogPost blogPost= createBlogPostPort.createBlogPost(createBlogPostCommand);
+            return ResponseEntity.status(HttpStatus.CREATED).body(blogPost);
         } catch (AlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new BlogPostException(e.getMessage()));
         } catch (Exception e) {

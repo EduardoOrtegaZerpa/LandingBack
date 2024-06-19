@@ -3,6 +3,7 @@ package com.eduortza.api.application.service.Project;
 import com.eduortza.api.application.port.in.Project.modify.ModifyProjectCommand;
 import com.eduortza.api.application.port.in.Project.modify.ModifyProjectPort;
 import com.eduortza.api.application.port.out.FilePort;
+import com.eduortza.api.application.port.out.Project.GetProjectPort;
 import com.eduortza.api.application.port.out.Project.UpdateProjectPort;
 import com.eduortza.api.common.UseCase;
 import com.eduortza.api.domain.Project;
@@ -13,18 +14,20 @@ import com.eduortza.api.application.exception.StoreException;
 public class ModifyProjectService implements ModifyProjectPort {
 
     private final UpdateProjectPort updateProjectPort;
+    private final GetProjectPort getProjectPort;
     private final FilePort filePort;
 
-    public ModifyProjectService(UpdateProjectPort updateProjectPort, FilePort filePort) {
+    public ModifyProjectService(UpdateProjectPort updateProjectPort, FilePort filePort, GetProjectPort getProjectPort) {
         this.updateProjectPort = updateProjectPort;
         this.filePort = filePort;
+        this.getProjectPort = getProjectPort;
     }
 
     @Transactional
     @Override
-    public void modifyProject(ModifyProjectCommand modifyProjectCommand) {
+    public void modifyProject(long id, ModifyProjectCommand modifyProjectCommand) {
 
-            Project project = modifyProjectCommand.getOriginalProject();
+            Project project = getProjectPort.get(id);
 
             if (project == null) {
                 throw new NullPointerException("Project is null");
