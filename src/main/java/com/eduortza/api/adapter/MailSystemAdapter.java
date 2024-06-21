@@ -20,7 +20,6 @@ public class MailSystemAdapter implements MailPort {
 
     @Override
     public void sendMail(String from, String subject, String body) {
-        // Send mail
         SimpleMailMessage mail = new SimpleMailMessage();
         mail.setFrom(from);
         mail.setTo("eduardo@localhost");
