@@ -71,6 +71,7 @@ public class LoadUserController {
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(24*3600))
                 .subject(userEntity.getUsername())
+                .claim("role", "ADMIN")
                 .build();
 
         var encoder = new NimbusJwtEncoder(
