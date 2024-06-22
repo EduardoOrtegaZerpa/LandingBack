@@ -21,9 +21,9 @@ public class ModifyUserController {
     private final ModifyUserPort modifyUserPort;
     private final JwtService jwtService;
 
-    public ModifyUserController(ModifyUserPort modifyUserPort) {
+    public ModifyUserController(ModifyUserPort modifyUserPort, JwtService jwtService) {
         this.modifyUserPort = modifyUserPort;
-        this.jwtService = new JwtService();
+        this.jwtService = jwtService;
     }
 
     @PutMapping("/user/{id}")

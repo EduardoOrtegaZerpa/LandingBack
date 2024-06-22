@@ -19,9 +19,9 @@ public class ModifyProjectController {
     private final ModifyProjectPort modifyProjectPort;
     private final JwtService jwtService;
 
-    public ModifyProjectController(ModifyProjectPort modifyProjectPort) {
+    public ModifyProjectController(ModifyProjectPort modifyProjectPort, JwtService jwtService) {
         this.modifyProjectPort = modifyProjectPort;
-        this.jwtService = new JwtService();
+        this.jwtService = jwtService;
     }
 
     @PutMapping("/project/{id}")

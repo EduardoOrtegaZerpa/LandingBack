@@ -17,9 +17,9 @@ public class RemoveProjectController {
     private final RemoveProjectPort removeProjectPort;
     private final JwtService jwtService;
 
-    public RemoveProjectController(RemoveProjectPort removeProjectPort) {
+    public RemoveProjectController(RemoveProjectPort removeProjectPort, JwtService jwtService) {
         this.removeProjectPort = removeProjectPort;
-        this.jwtService = new JwtService();
+        this.jwtService = jwtService;
     }
 
     @DeleteMapping("/project/{id}")

@@ -16,9 +16,9 @@ public class RemoveBlogController {
     private final RemoveBlogPostPort removeBlogPostPort;
     private final JwtService jwtService;
 
-    public RemoveBlogController(RemoveBlogPostPort removeBlogPostPort) {
+    public RemoveBlogController(RemoveBlogPostPort removeBlogPostPort, JwtService jwtService) {
         this.removeBlogPostPort = removeBlogPostPort;
-        this.jwtService = new JwtService();
+        this.jwtService = jwtService;
     }
 
     @DeleteMapping("/blog/{id}")

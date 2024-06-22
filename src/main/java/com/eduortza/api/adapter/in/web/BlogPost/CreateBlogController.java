@@ -21,9 +21,9 @@ public class CreateBlogController {
     private final CreateBlogPostPort createBlogPostPort;
     private final JwtService jwtService;
 
-    public CreateBlogController(CreateBlogPostPort createBlogPostPort) {
+    public CreateBlogController(CreateBlogPostPort createBlogPostPort, JwtService jwtService) {
         this.createBlogPostPort = createBlogPostPort;
-        this.jwtService = new JwtService();
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/blog")

@@ -19,9 +19,9 @@ public class CreateProjectController {
     private final CreateProjectPort createProjectPort;
     private final JwtService jwtService;
 
-    public CreateProjectController(CreateProjectPort createProjectPort) {
+    public CreateProjectController(CreateProjectPort createProjectPort, JwtService jwtService) {
         this.createProjectPort = createProjectPort;
-        this.jwtService = new JwtService();
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/project")

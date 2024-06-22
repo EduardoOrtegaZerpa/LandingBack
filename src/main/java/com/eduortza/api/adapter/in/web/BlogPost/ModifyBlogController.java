@@ -20,9 +20,9 @@ public class ModifyBlogController {
     private final ModifyBlogPostPort modifyBlogPostPort;
     private final JwtService jwtService;
 
-    public ModifyBlogController(ModifyBlogPostPort modifyBlogPostPort) {
+    public ModifyBlogController(ModifyBlogPostPort modifyBlogPostPort, JwtService jwtService) {
         this.modifyBlogPostPort = modifyBlogPostPort;
-        this.jwtService = new JwtService();
+        this.jwtService = jwtService;
     }
 
     @PutMapping("/blog/{id}")

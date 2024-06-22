@@ -1,5 +1,5 @@
 package com.eduortza.api.application.port.out.MailSuscriber;
 
-public interface DeleteMailSuscriberPort {
+public interface DeleteMailSubscriberPort {
     void delete(String email) throws Exception;
 }
