@@ -1,7 +1,9 @@
 package com.eduortza.api.adapter.in.web.BlogPost;
 
 import com.eduortza.api.adapter.exception.BlogPostException;
+import com.eduortza.api.adapter.exception.JwtAuthorizationException;
 import com.eduortza.api.adapter.exception.NonExistsException;
+import com.eduortza.api.adapter.out.persistence.services.JwtService;
 import com.eduortza.api.application.port.in.BlogPost.modify.ModifyBlogPostCommand;
 import com.eduortza.api.application.port.in.BlogPost.modify.ModifyBlogPostPort;
 import org.springframework.http.ResponseEntity;
@@ -16,16 +18,21 @@ import org.springframework.http.HttpStatus;
 public class ModifyBlogController {
 
     private final ModifyBlogPostPort modifyBlogPostPort;
+    private final JwtService jwtService;
 
     public ModifyBlogController(ModifyBlogPostPort modifyBlogPostPort) {
         this.modifyBlogPostPort = modifyBlogPostPort;
+        this.jwtService = new JwtService();
     }
 
     @PutMapping("/blog/{id}")
     public ResponseEntity<Object> modifyBlogPost(@PathVariable long id, @RequestBody ModifyBlogPostCommand modifyBlogPostCommand) {
         try {
+            jwtService.authorizeAdminAccess();
             modifyBlogPostPort.modifyBlogPost(id, modifyBlogPostCommand);
             return ResponseEntity.status(HttpStatus.OK).body("Blog post modified");
+        } catch (JwtAuthorizationException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new BlogPostException(e.getMessage()));
         } catch (NonExistsException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BlogPostException(e.getMessage()));
         } catch (Exception e) {
