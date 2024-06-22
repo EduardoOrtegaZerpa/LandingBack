@@ -10,15 +10,10 @@ import com.eduortza.api.application.port.in.BlogPost.create.CreateBlogPostPort;
 import com.eduortza.api.domain.BlogPost;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 
 @RestController
 public class CreateBlogController {
@@ -35,7 +30,6 @@ public class CreateBlogController {
     public ResponseEntity<Object> createBlogPost(@RequestBody CreateBlogPostCommand createBlogPostCommand) {
         try {
             jwtService.authorizeAdminAccess();
-
             BlogPost blogPost= createBlogPostPort.createBlogPost(createBlogPostCommand);
             return ResponseEntity.status(HttpStatus.CREATED).body(blogPost);
         } catch (AlreadyExistsException e) {
