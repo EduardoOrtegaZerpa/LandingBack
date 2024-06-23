@@ -12,7 +12,6 @@ import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.spec.SecretKeySpec;
 import java.time.Instant;
 
 @Service
@@ -77,7 +76,7 @@ public class JwtService {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer(JWT_ISSUER)
                 .issuedAt(now)
-                .expiresAt(now.plusSeconds(24*3600))
+                .expiresAt(now.plusSeconds(4*3600))
                 .subject(userEntity.getUsername())
                 .claim("role", "ADMIN")
                 .build();

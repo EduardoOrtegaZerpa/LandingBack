@@ -17,4 +17,6 @@ public class MailSuscriberEntity {
     private long id;
     @Column(nullable = false, unique = true)
     private String email;
+    @Column()
+    private String token;
 }

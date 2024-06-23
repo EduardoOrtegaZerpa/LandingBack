@@ -1,6 +1,7 @@
 package com.eduortza.api.application.service.Project;
 
 import com.eduortza.api.application.exception.FileManagerException;
+import com.eduortza.api.application.exception.LoadingException;
 import com.eduortza.api.application.port.in.Project.modify.ModifyProjectCommand;
 import com.eduortza.api.application.port.in.Project.modify.ModifyProjectPort;
 import com.eduortza.api.application.port.out.FilePort;
@@ -28,7 +29,13 @@ public class ModifyProjectService implements ModifyProjectPort {
     @Override
     public void modifyProject(long id, ModifyProjectCommand modifyProjectCommand) {
 
-            Project project = getProjectPort.get(id);
+            Project project;
+
+            try {
+                project = getProjectPort.get(id);
+            } catch (Exception e) {
+                throw new LoadingException("Error while trying to get from Database", e);
+            }
 
             if (project == null) {
                 throw new NullPointerException("Project is null");

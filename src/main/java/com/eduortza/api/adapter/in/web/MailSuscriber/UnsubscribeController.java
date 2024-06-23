@@ -1,6 +1,7 @@
 package com.eduortza.api.adapter.in.web.MailSuscriber;
 
 import com.eduortza.api.adapter.exception.JwtAuthorizationException;
+import com.eduortza.api.adapter.exception.NonExistsException;
 import com.eduortza.api.adapter.exception.UnsuscribeException;
 import com.eduortza.api.adapter.out.persistence.services.JwtService;
 import com.eduortza.api.application.port.in.MailSubscriber.unsubscribe.UnsubscribePort;
@@ -29,6 +30,8 @@ public class UnsubscribeController {
              return ResponseEntity.status(HttpStatus.CREATED).body("Unsubscribed");
          } catch (JwtAuthorizationException e) {
              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new UnsuscribeException(e.getMessage()));
+         } catch (NonExistsException e) {
+             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new UnsuscribeException(e.getMessage()));
          } catch (Exception e) {
              return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new UnsuscribeException(e.getMessage()));
          }

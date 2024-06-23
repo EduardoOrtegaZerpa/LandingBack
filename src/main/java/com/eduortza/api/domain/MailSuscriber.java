@@ -13,6 +13,7 @@ public class MailSuscriber {
 
     private long id;
     private String email;
+    private String token;
 
     public boolean isValidEmail() {
         String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";

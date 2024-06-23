@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SpringMailSuscriberRepository extends JpaRepository<MailSuscriberEntity, Long>{
     void deleteByEmail(String email);
+    MailSuscriberEntity findByEmail(String email);
 }

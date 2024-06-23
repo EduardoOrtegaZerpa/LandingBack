@@ -29,6 +29,8 @@ public class FyleSystemAdapter implements FilePort {
         File file = new File(path);
         if (file.exists()) {
             file.delete();
+        } else {
+            throw new FileManagerException("File does not exist");
         }
     }
 

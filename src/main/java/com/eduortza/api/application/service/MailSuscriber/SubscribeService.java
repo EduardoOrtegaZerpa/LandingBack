@@ -18,7 +18,7 @@ public class SubscribeService implements SubscribePort {
     @Override
     public void subscribe(String email) {
         MailSuscriber mailSuscriber = new MailSuscriber();
-
+        
         mailSuscriber.setEmail(email);
 
         try {

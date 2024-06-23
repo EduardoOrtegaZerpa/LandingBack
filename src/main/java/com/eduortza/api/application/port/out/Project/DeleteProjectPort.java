@@ -1,6 +1,6 @@
 package com.eduortza.api.application.port.out.Project;
 
 public interface DeleteProjectPort {
-    void delete(long id);
-    void deleteAll();
+    void delete(long id) throws Exception;
+    void deleteAll() throws Exception;
 }

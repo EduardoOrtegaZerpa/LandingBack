@@ -1,5 +1,6 @@
 package com.eduortza.api.application.service.User;
 
+import com.eduortza.api.application.exception.LoadingException;
 import com.eduortza.api.application.exception.StoreException;
 import com.eduortza.api.application.port.in.User.modify.ModifyUserCommand;
 import com.eduortza.api.application.port.in.User.modify.ModifyUserPort;
@@ -23,7 +24,13 @@ public class ModifyUserService implements ModifyUserPort {
     @Transactional
     @Override
     public void modifyUser(long id, ModifyUserCommand modifyUserCommand) {
-        User user = getUserPort.get(id);
+        User user;
+
+        try {
+            user = getUserPort.get(id);
+        } catch (Exception e) {
+            throw new LoadingException("Error while trying to load user from Database", e);
+        }
 
         if (user == null) {
             throw new NullPointerException("User is null");

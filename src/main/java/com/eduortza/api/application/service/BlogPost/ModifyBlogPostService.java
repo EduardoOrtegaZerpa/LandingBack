@@ -1,6 +1,7 @@
 package com.eduortza.api.application.service.BlogPost;
 
 import com.eduortza.api.application.exception.FileManagerException;
+import com.eduortza.api.application.exception.LoadingException;
 import com.eduortza.api.application.exception.StoreException;
 import com.eduortza.api.application.port.in.BlogPost.modify.ModifyBlogPostCommand;
 import com.eduortza.api.application.port.in.BlogPost.modify.ModifyBlogPostPort;
@@ -10,9 +11,6 @@ import com.eduortza.api.application.port.out.FilePort;
 import com.eduortza.api.common.UseCase;
 import com.eduortza.api.domain.BlogPost;
 import jakarta.transaction.Transactional;
-
-import java.io.File;
-import java.util.SplittableRandom;
 
 
 @UseCase
@@ -32,7 +30,13 @@ public class ModifyBlogPostService implements ModifyBlogPostPort {
     @Override
     public void modifyBlogPost(long id, ModifyBlogPostCommand modifyBlogPostCommand) {
 
-        BlogPost blogPost = getBlogPostPort.get(id);
+        BlogPost blogPost;
+
+        try {
+            blogPost = getBlogPostPort.get(id);
+        } catch (Exception e) {
+            throw new LoadingException("Error while trying to get from Database", e);
+        }
 
         if (blogPost == null) {
             throw new NullPointerException("BlogPost is null");

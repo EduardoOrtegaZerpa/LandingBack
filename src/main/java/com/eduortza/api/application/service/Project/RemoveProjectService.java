@@ -38,7 +38,11 @@ public class RemoveProjectService implements RemoveProjectPort {
     public void removeAllProjects() {
         try {
             getProjectPort.getAll().forEach(project -> {
-                filePort.deleteFile("src/main/resources/static/" + project.getImageUrl());
+                try {
+                    filePort.deleteFile("src/main/resources/static/" + project.getImageUrl());
+                } catch (Exception e) {
+                    throw new DeleteException("Error while trying to delete from Database", e);
+                }
             });
             deleteProjectPort.deleteAll();
         } catch (Exception e) {

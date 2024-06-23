@@ -1,5 +1,6 @@
 package com.eduortza.api.adapter;
 
+import com.eduortza.api.adapter.out.persistence.services.JwtService;
 import com.eduortza.api.application.port.out.MailPort;
 
 import com.eduortza.api.domain.MailSuscriber;
@@ -15,10 +16,12 @@ import java.util.List;
 public class MailSystemAdapter implements MailPort {
 
     private final JavaMailSender javaMailSender;
+    private final JwtService jwtService;
 
     @Autowired
-    public MailSystemAdapter(JavaMailSender javaMailSender) {
+    public MailSystemAdapter(JavaMailSender javaMailSender, JwtService jwtService) {
         this.javaMailSender = javaMailSender;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -32,20 +35,30 @@ public class MailSystemAdapter implements MailPort {
         javaMailSender.send(mail);
     }
 
-    public void sendMailTo(String to, String subject, String body) {
+    public void sendMailTo(String to, String subject, String token) {
         SimpleMailMessage mail = new SimpleMailMessage();
+        String body = generateHtmlBodyWithToken(token);
+
         mail.setFrom("noreply@localhost");
         mail.setTo(to);
         mail.setSubject(subject);
         mail.setText(body);
 
+
         javaMailSender.send(mail);
     }
 
+
+    String generateHtmlBodyWithToken(String token){
+        String htmlBody = "<h1>Click the link to unsn</h1><a href='http://eduortza.com:8080/subscribe/"+token+"'>Confirm</a>";
+        return htmlBody;
+    }
+
+
     @Override
-    public void sendMailToAllSubscribers(List<MailSuscriber> toList, String subject, String body) {
+    public void sendMailToAllSubscribers(List<MailSuscriber> toList, String subject) {
         for (MailSuscriber mailSuscriber : toList) {
-            sendMailTo(mailSuscriber.getEmail(), subject, body);
+            sendMailTo(mailSuscriber.getEmail(), subject, mailSuscriber.getToken());
         }
     }
 
