@@ -19,6 +19,7 @@ public class CreateBlogPostService implements CreateBlogPostPort {
     private final StoreBlogPostPort storeBlogPostPort;
     private final FilePort filePort;
 
+
     public CreateBlogPostService(StoreBlogPostPort storeBlogPostPort, FilePort filePort) {
         this.storeBlogPostPort = storeBlogPostPort;
         this.filePort = filePort;
@@ -38,7 +39,7 @@ public class CreateBlogPostService implements CreateBlogPostPort {
 
         try{
             String fileName = filePort.saveFile(createBlogPostCommand.getImage(), "src/main/resources/static/images");
-            blogPost.setImageUrl("images/" + fileName);
+            blogPost.setImageUrl("http://localhost:8080/images/" + fileName);
         } catch (Exception e) {
             throw new FileManagerException("Error while trying to store image", e);
         }

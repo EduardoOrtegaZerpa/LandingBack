@@ -38,7 +38,7 @@ public class CreateProjectService implements CreateProjectPort {
 
             try {
                 String fileName = filePort.saveFile(createProjectCommand.getImage(), "src/main/resources/static/images");
-                project.setImageUrl("images/" + fileName);
+                project.setImageUrl("http://localhost:8080/images/" + fileName);
             } catch (Exception e) {
                 throw new FileManagerException("Error while trying to store image", e);
             }

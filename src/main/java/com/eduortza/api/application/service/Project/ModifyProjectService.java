@@ -59,9 +59,10 @@ public class ModifyProjectService implements ModifyProjectPort {
 
             if (modifyProjectCommand.getImage() != null) {
                  try {
-                     filePort.deleteFile("src/main/resources/static/" + project.getImageUrl());
-                     String fileName = filePort.saveFile(modifyProjectCommand.getImage(), "src/main/resources/static/images");
-                     project.setImageUrl("images/" + fileName);
+                     String fileName = project.getImageUrl().substring(project.getImageUrl().lastIndexOf("/") + 1);
+                     filePort.deleteFile("src/main/resources/static/images/" + fileName);
+                     String fileNameCommand = filePort.saveFile(modifyProjectCommand.getImage(), "src/main/resources/static/images");
+                     project.setImageUrl("http://localhost:8080/images/" + fileNameCommand);
                  } catch (Exception e) {
                      throw new FileManagerException("Error while trying to store image", e);
                  }

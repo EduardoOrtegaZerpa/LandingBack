@@ -12,6 +12,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,9 +35,8 @@ public class LoadUserController {
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody LoadUserCommand command) {
+        var response = new HashMap<String, Object>();
         try {
-            logger.info("Login request received for user: {}", command.getUsername());
-
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             command.getUsername(),
@@ -43,28 +44,32 @@ public class LoadUserController {
                     )
             );
 
-            logger.info("Authentication successful");
-
             UserEntity userEntity = UserMapper.mapToEntity(loadUserPort.loadUser(command));
-            logger.info("User loaded from database: {}", userEntity.getUsername());
 
             String jwt = this.jwtService.createJwtToken(userEntity);
-            logger.info("JWT token created");
-
             User user = UserMapper.mapToDomain(userEntity);
 
-            var response = new HashMap<String, Object>();
             response.put("token", jwt);
             response.put("user", user);
 
-            logger.info("Login successful");
-
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            String errorMessage = (e.getMessage() != null) ? e.getMessage() : "An error occurred";
-            logger.info("Login failed: {}", errorMessage);
-            logger.warn("Login failed: {}", errorMessage);
-            return e.getMessage() != null ? ResponseEntity.badRequest().body("error") : ResponseEntity.badRequest().build();
+            response.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @PostMapping("/validate/token")
+    public ResponseEntity<Object> validateToken(@RequestHeader("Authorization") String token) {
+        var response = new HashMap<String, Object>();
+        try {
+            String jwt = token.substring(7);
+            boolean isValid = jwtService.validateToken(jwt);
+            response.put("isValid", isValid);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
         }
     }
 

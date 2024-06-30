@@ -76,7 +76,7 @@ public class JwtService {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer(JWT_ISSUER)
                 .issuedAt(now)
-                .expiresAt(now.plusSeconds(4*3600))
+                .expiresAt(now.plusSeconds(2*3600))
                 .subject(userEntity.getUsername())
                 .claim("role", "ADMIN")
                 .build();
@@ -112,5 +112,14 @@ public class JwtService {
         );
 
         return encoder.encode(params).getTokenValue();
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwt jwt = jwtDecoder.decode(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

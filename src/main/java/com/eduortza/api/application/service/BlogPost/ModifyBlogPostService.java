@@ -1,5 +1,6 @@
 package com.eduortza.api.application.service.BlogPost;
 
+import com.eduortza.api.adapter.in.web.User.LoadUserController;
 import com.eduortza.api.application.exception.FileManagerException;
 import com.eduortza.api.application.exception.LoadingException;
 import com.eduortza.api.application.exception.StoreException;
@@ -11,6 +12,8 @@ import com.eduortza.api.application.port.out.FilePort;
 import com.eduortza.api.common.UseCase;
 import com.eduortza.api.domain.BlogPost;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @UseCase
@@ -19,6 +22,7 @@ public class ModifyBlogPostService implements ModifyBlogPostPort {
     private final UpdateBlogPostPort updateBlogPostPort;
     private final FilePort filePort;
     private final GetBlogPostPort getBlogPostPort;
+    private static final Logger logger = LoggerFactory.getLogger(ModifyBlogPostService.class);
 
     public ModifyBlogPostService(UpdateBlogPostPort updateBlogPostPort, FilePort filePort, GetBlogPostPort getBlogPostPort) {
         this.updateBlogPostPort = updateBlogPostPort;
@@ -58,11 +62,16 @@ public class ModifyBlogPostService implements ModifyBlogPostPort {
             blogPost.setMinutesToRead(modifyBlogPostCommand.getMinutesToRead());
         }
 
+        if (modifyBlogPostCommand.getTags() != null) {
+            blogPost.setTags(modifyBlogPostCommand.getTags());
+        }
+
         if (modifyBlogPostCommand.getImage() != null) {
             try {
-                filePort.deleteFile("src/main/resources/static/" + blogPost.getImageUrl());
-                String fileName = filePort.saveFile(modifyBlogPostCommand.getImage(), "src/main/resources/static/images");
-                blogPost.setImageUrl("images/" + fileName);
+                String fileName = blogPost.getImageUrl().substring(blogPost.getImageUrl().lastIndexOf("/") + 1);
+                filePort.deleteFile("src/main/resources/static/images/" + fileName);
+                String fileNameCommand = filePort.saveFile(modifyBlogPostCommand.getImage(), "src/main/resources/static/images");
+                blogPost.setImageUrl("http://localhost:8080/images/" + fileNameCommand);
             } catch (Exception e) {
                 throw new FileManagerException("Error while trying to store image", e);
             }
