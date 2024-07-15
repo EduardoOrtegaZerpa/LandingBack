@@ -18,10 +18,8 @@ public class TrajectoryAdapter implements GetTrajectoryPort, UpdateTrajectoryPor
     }
 
     @Override
-    public Trajectory getTrajectoryById(long id) {
-        return springTrajectoryRepository.findById(id)
-                .map(TrajectoryMapper::mapToDomain)
-                .orElseThrow(() -> new NonExistsException("Trajectory with id " + id + " does not exist"));
+    public Trajectory getTrajectory() {
+        return TrajectoryMapper.mapToDomain(springTrajectoryRepository.findAll().get(0));
     }
 
     @Override

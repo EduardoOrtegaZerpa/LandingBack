@@ -23,13 +23,13 @@ public class ModifyTrajectoryService implements ModifyTrajectoryPort {
 
     @Transactional
     @Override
-    public void modifyTrajectory(ModifyTrajectoryCommand command) {
+    public Trajectory modifyTrajectory(ModifyTrajectoryCommand command) {
 
         Trajectory trajectory;
 
 
         try {
-            trajectory = getTrajectoryPort.getTrajectoryById(command.getId());
+            trajectory = getTrajectoryPort.getTrajectory();
         } catch (Exception e) {
             throw new LoadingException("Error while trying to get from Database", e);
         }
@@ -44,6 +44,7 @@ public class ModifyTrajectoryService implements ModifyTrajectoryPort {
 
         try {
             updateTrajectoryPort.updateTrajectory(trajectory);
+            return trajectory;
         } catch (Exception e) {
             throw new StoreException("Error while trying to store in Database", e);
         }

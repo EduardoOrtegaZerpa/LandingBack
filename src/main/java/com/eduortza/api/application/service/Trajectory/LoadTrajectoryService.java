@@ -18,9 +18,9 @@ public class LoadTrajectoryService implements LoadTrajectoryPort {
 
     @Transactional
     @Override
-    public Trajectory loadTrajectory(long id) {
+    public Trajectory loadTrajectory() {
         try {
-            return getTrajectoryPort.getTrajectoryById(id);
+            return getTrajectoryPort.getTrajectory();
         } catch (Exception e) {
             throw new LoadingException("Error while trying to load from Database", e);
         }

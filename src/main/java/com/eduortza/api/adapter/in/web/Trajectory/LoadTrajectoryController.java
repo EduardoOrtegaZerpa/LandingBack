@@ -15,10 +15,10 @@ public class LoadTrajectoryController {
         this.loadTrajectoryPort = loadTrajectoryPort;
     }
 
-    @GetMapping("/trajectory/{id}")
-    public ResponseEntity<Object> loadTrajectory(@PathVariable long id) {
+    @GetMapping("/trajectory")
+    public ResponseEntity<Object> loadTrajectory() {
         try {
-            var trajectory = loadTrajectoryPort.loadTrajectory(id);
+            var trajectory = loadTrajectoryPort.loadTrajectory();
             return ResponseEntity.ok(trajectory);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(new Exception(e.getMessage()));
