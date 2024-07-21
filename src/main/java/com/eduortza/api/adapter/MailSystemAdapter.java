@@ -1,6 +1,5 @@
 package com.eduortza.api.adapter;
 
-import com.eduortza.api.adapter.out.persistence.services.JwtService;
 import com.eduortza.api.application.port.out.MailPort;
 
 import com.eduortza.api.domain.MailSuscriber;
@@ -16,12 +15,10 @@ import java.util.List;
 public class MailSystemAdapter implements MailPort {
 
     private final JavaMailSender javaMailSender;
-    private final JwtService jwtService;
 
     @Autowired
-    public MailSystemAdapter(JavaMailSender javaMailSender, JwtService jwtService) {
+    public MailSystemAdapter(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
-        this.jwtService = jwtService;
     }
 
     @Override
@@ -32,7 +29,7 @@ public class MailSystemAdapter implements MailPort {
         mail.setSubject(subject);
         mail.setText(body);
 
-        javaMailSender.send(mail);
+//        javaMailSender.send(mail);
     }
 
     public void sendMailTo(String to, String subject, String token) {
@@ -44,8 +41,8 @@ public class MailSystemAdapter implements MailPort {
         mail.setSubject(subject);
         mail.setText(body);
 
+        //javaMailSender.send(mail);
 
-        javaMailSender.send(mail);
     }
 
 

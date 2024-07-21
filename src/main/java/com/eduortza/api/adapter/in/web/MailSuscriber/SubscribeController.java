@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+
 @RestController
 public class SubscribeController {
 
@@ -20,9 +22,11 @@ public class SubscribeController {
 
     @PostMapping("/subscribe")
     public ResponseEntity<Object> subscribe(@RequestBody String email) {
+        var response = new HashMap<String, String>();
         try {
             subscribePort.subscribe(email);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Subscribed");
+            response.put("message", "Subscribed");
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (AlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new AlreadyExistsException(e.getMessage()));
         } catch (Exception e) {

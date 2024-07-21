@@ -1,15 +1,20 @@
 package com.eduortza.api.application.service.BlogPost;
 
+import com.eduortza.api.adapter.in.web.User.LoadUserController;
 import com.eduortza.api.application.exception.FileManagerException;
 import com.eduortza.api.application.exception.StoreException;
 import com.eduortza.api.application.port.in.BlogPost.create.CreateBlogPostCommand;
 import com.eduortza.api.application.port.in.BlogPost.create.CreateBlogPostPort;
 import com.eduortza.api.application.port.out.BlogPost.StoreBlogPostPort;
 import com.eduortza.api.application.port.out.FilePort;
+import com.eduortza.api.application.port.out.MailPort;
+import com.eduortza.api.application.port.out.MailSuscriber.GetMailSubscriberPort;
 import com.eduortza.api.domain.BlogPost;
+import com.eduortza.api.domain.MailSuscriber;
 import jakarta.transaction.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 import com.eduortza.api.common.UseCase;
 
@@ -18,11 +23,19 @@ public class CreateBlogPostService implements CreateBlogPostPort {
 
     private final StoreBlogPostPort storeBlogPostPort;
     private final FilePort filePort;
+    private final MailPort mailPort;
+    private final GetMailSubscriberPort getMailSubscriberPort;
 
 
-    public CreateBlogPostService(StoreBlogPostPort storeBlogPostPort, FilePort filePort) {
+    public CreateBlogPostService(
+            StoreBlogPostPort storeBlogPostPort,
+            FilePort filePort,
+            GetMailSubscriberPort getMailSubscriberPort,
+            MailPort mailPort) {
         this.storeBlogPostPort = storeBlogPostPort;
         this.filePort = filePort;
+        this.getMailSubscriberPort = getMailSubscriberPort;
+        this.mailPort = mailPort;
     }
 
     @Transactional
@@ -45,7 +58,10 @@ public class CreateBlogPostService implements CreateBlogPostPort {
         }
 
         try {
-            return storeBlogPostPort.store(blogPost);
+            BlogPost storedBlogPost = storeBlogPostPort.store(blogPost);
+            List<MailSuscriber> mailSuscribers = getMailSubscriberPort.getAllMailSuscriber();
+            mailPort.sendMailToAllSubscribers(mailSuscribers, "New Blog Post: " + storedBlogPost.getTitle());
+            return storedBlogPost;
         } catch (Exception e) {
             throw new StoreException("Error while trying to store in Database", e);
         }

@@ -5,7 +5,6 @@ import com.eduortza.api.adapter.FyleSystemAdapter;
 import com.eduortza.api.adapter.exception.AlreadyExistsException;
 import com.eduortza.api.adapter.exception.BlogPostException;
 import com.eduortza.api.adapter.exception.JwtAuthorizationException;
-import com.eduortza.api.adapter.in.web.Project.CreateProjectController;
 import com.eduortza.api.adapter.out.persistence.services.JwtService;
 import com.eduortza.api.application.port.in.BlogPost.create.CreateBlogPostCommand;
 import com.eduortza.api.application.port.in.BlogPost.create.CreateBlogPostPort;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.logging.Logger;
 
 
 @RestController
@@ -27,7 +25,6 @@ public class CreateBlogController {
     private final CreateBlogPostPort createBlogPostPort;
     private final JwtService jwtService;
     private final FyleSystemAdapter fyleSystemAdapter;
-    private static final Logger logger = Logger.getLogger(CreateProjectController.class.getName());
 
     public CreateBlogController(CreateBlogPostPort createBlogPostPort, JwtService jwtService, FyleSystemAdapter fyleSystemAdapter) {
         this.createBlogPostPort = createBlogPostPort;
@@ -45,9 +42,7 @@ public class CreateBlogController {
     ) {
         File imageFile;
         try {
-            logger.info("Creating blog post");
             imageFile = fyleSystemAdapter.createTempFile(image);
-            logger.info("Image file created");
             CreateBlogPostCommand createBlogPostCommand = new CreateBlogPostCommand(title, content, description, minutesToRead, imageFile);
             jwtService.authorizeAdminAccess();
             BlogPost blogPost= createBlogPostPort.createBlogPost(createBlogPostCommand);

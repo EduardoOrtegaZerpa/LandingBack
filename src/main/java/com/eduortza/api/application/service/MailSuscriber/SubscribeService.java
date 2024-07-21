@@ -1,5 +1,6 @@
 package com.eduortza.api.application.service.MailSuscriber;
 
+import com.eduortza.api.adapter.exception.AlreadyExistsException;
 import com.eduortza.api.application.exception.StoreException;
 import com.eduortza.api.application.port.in.MailSubscriber.subscribe.SubscribePort;
 import com.eduortza.api.application.port.out.MailSuscriber.StoreMailSubscriberPort;
@@ -16,14 +17,17 @@ public class SubscribeService implements SubscribePort {
     }
 
     @Override
-    public void subscribe(String email) {
+    public void subscribe(String email) throws StoreException {
         MailSuscriber mailSuscriber = new MailSuscriber();
         
         mailSuscriber.setEmail(email);
 
         try {
             storeMailSubscriberPort.store(mailSuscriber);
-        } catch (Exception e) {
+        } catch (AlreadyExistsException e) {
+            throw new AlreadyExistsException("MailSubscriber already exists", e);
+        }
+        catch (Exception e) {
             throw new StoreException("Error while trying to store in Database", e);
         }
     }
