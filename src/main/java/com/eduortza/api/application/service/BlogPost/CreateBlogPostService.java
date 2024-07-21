@@ -1,5 +1,6 @@
 package com.eduortza.api.application.service.BlogPost;
 
+import com.eduortza.api.adapter.exception.AlreadyExistsException;
 import com.eduortza.api.adapter.in.web.User.LoadUserController;
 import com.eduortza.api.application.exception.FileManagerException;
 import com.eduortza.api.application.exception.StoreException;
@@ -62,6 +63,8 @@ public class CreateBlogPostService implements CreateBlogPostPort {
             List<MailSuscriber> mailSuscribers = getMailSubscriberPort.getAllMailSuscriber();
             mailPort.sendMailToAllSubscribers(mailSuscribers, "New Blog Post: " + storedBlogPost.getTitle());
             return storedBlogPost;
+        } catch (AlreadyExistsException e) {
+            throw new StoreException("Error while trying to store in Database", e);
         } catch (Exception e) {
             throw new StoreException("Error while trying to store in Database", e);
         }

@@ -1,5 +1,6 @@
 package com.eduortza.api.application.service.Trajectory;
 
+import com.eduortza.api.adapter.exception.NonExistsException;
 import com.eduortza.api.application.exception.LoadingException;
 import com.eduortza.api.application.exception.StoreException;
 import com.eduortza.api.application.port.in.Trajectory.modify.ModifyTrajectoryCommand;
@@ -45,7 +46,10 @@ public class ModifyTrajectoryService implements ModifyTrajectoryPort {
         try {
             updateTrajectoryPort.updateTrajectory(trajectory);
             return trajectory;
-        } catch (Exception e) {
+        } catch (NonExistsException e) {
+            throw new StoreException("Trajectory with id " + trajectory.getId() + " does not exist", e);
+        }
+        catch (Exception e) {
             throw new StoreException("Error while trying to store in Database", e);
         }
     }

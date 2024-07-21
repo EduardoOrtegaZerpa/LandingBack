@@ -1,5 +1,6 @@
 package com.eduortza.api.application.service.BlogPost;
 
+import com.eduortza.api.adapter.exception.NonExistsException;
 import com.eduortza.api.application.exception.LoadingException;
 import com.eduortza.api.application.port.in.BlogPost.load.LoadBlogPostPort;
 import com.eduortza.api.application.port.out.BlogPost.GetBlogPostPort;
@@ -21,7 +22,10 @@ public class LoadBlogPostService implements LoadBlogPostPort {
     public BlogPost loadBlogPost(Long id) {
         try {
             return getBlogPostPort.get(id);
-        } catch (Exception e) {
+        } catch (NonExistsException e) {
+            throw new LoadingException("BlogPost with id " + id + " does not exist", e);
+        }
+        catch (Exception e) {
             throw new LoadingException("Error while trying to load from Database", e);
         }
     }

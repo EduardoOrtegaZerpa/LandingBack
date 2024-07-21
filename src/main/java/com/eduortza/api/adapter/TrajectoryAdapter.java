@@ -1,12 +1,15 @@
 package com.eduortza.api.adapter;
 
 import com.eduortza.api.adapter.exception.NonExistsException;
+import com.eduortza.api.adapter.out.persistence.entities.TrajectoryEntity;
 import com.eduortza.api.adapter.out.persistence.mappers.TrajectoryMapper;
 import com.eduortza.api.adapter.out.persistence.repository.SpringTrajectoryRepository;
 import com.eduortza.api.application.port.out.Trajectory.GetTrajectoryPort;
 import com.eduortza.api.application.port.out.Trajectory.UpdateTrajectoryPort;
 import com.eduortza.api.domain.Trajectory;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class TrajectoryAdapter implements GetTrajectoryPort, UpdateTrajectoryPort {
@@ -19,7 +22,11 @@ public class TrajectoryAdapter implements GetTrajectoryPort, UpdateTrajectoryPor
 
     @Override
     public Trajectory getTrajectory() {
-        return TrajectoryMapper.mapToDomain(springTrajectoryRepository.findAll().get(0));
+        List<TrajectoryEntity> entities = springTrajectoryRepository.findAll();
+        if (entities.isEmpty()) {
+            throw new NonExistsException("No Trajectory entity found.");
+        }
+        return TrajectoryMapper.mapToDomain(entities.get(0));
     }
 
     @Override

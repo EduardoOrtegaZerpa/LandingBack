@@ -1,6 +1,7 @@
 package com.eduortza.api.adapter;
 
 import com.eduortza.api.adapter.exception.AlreadyExistsException;
+import com.eduortza.api.adapter.exception.NonExistsException;
 import com.eduortza.api.adapter.out.persistence.entities.MailSuscriberEntity;
 import com.eduortza.api.adapter.out.persistence.mappers.MailSuscriberMapper;
 import com.eduortza.api.adapter.out.persistence.repository.SpringMailSuscriberRepository;
@@ -12,15 +13,12 @@ import com.eduortza.api.domain.MailSuscriber;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 @Repository
 public class MailSubscriberAdapter implements StoreMailSubscriberPort, DeleteMailSubscriberPort, GetMailSubscriberPort {
 
     private final SpringMailSuscriberRepository springMailSuscriberRepository;
     private final JwtService jwtService;
-
-    private static final Logger logger = Logger.getLogger(MailSubscriberAdapter.class.getName());
 
     public MailSubscriberAdapter(SpringMailSuscriberRepository springMailSuscriberRepository, JwtService jwtService) {
         this.springMailSuscriberRepository = springMailSuscriberRepository;
@@ -29,6 +27,14 @@ public class MailSubscriberAdapter implements StoreMailSubscriberPort, DeleteMai
 
     @Override
     public void delete(String email) throws Exception {
+        if (email == null) {
+            throw new NullPointerException("Email is null");
+        }
+
+        if (getMailSuscriberEntity(email) == null) {
+            throw new NonExistsException("MailSubscriber not found");
+        }
+
         springMailSuscriberRepository.deleteByEmail(email);
     }
 
@@ -57,8 +63,7 @@ public class MailSubscriberAdapter implements StoreMailSubscriberPort, DeleteMai
     public MailSuscriber getMailSuscriber(String email) {
         MailSuscriberEntity mailSubscriberEntity = springMailSuscriberRepository.findByEmail(email);
         if (mailSubscriberEntity == null) {
-            logger.info("MailSubscriber not found");
-            throw new NullPointerException("MailSubscriber not found");
+            throw new NonExistsException("MailSubscriber not found");
         }
         return MailSuscriberMapper.mapToDomain(mailSubscriberEntity);
     }

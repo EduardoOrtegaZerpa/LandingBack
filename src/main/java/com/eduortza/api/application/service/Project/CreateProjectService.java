@@ -1,5 +1,6 @@
 package com.eduortza.api.application.service.Project;
 
+import com.eduortza.api.adapter.exception.AlreadyExistsException;
 import com.eduortza.api.application.exception.FileManagerException;
 import com.eduortza.api.application.port.in.Project.create.CreateProjectCommand;
 import com.eduortza.api.application.port.in.Project.create.CreateProjectPort;
@@ -45,7 +46,10 @@ public class CreateProjectService implements CreateProjectPort {
 
             try {
                 return storeProjectPort.store(project);
-            } catch (Exception e) {
+            } catch (AlreadyExistsException e) {
+                throw new StoreException("Project already exists", e);
+            }
+            catch (Exception e) {
                 throw new StoreException("Error while trying to store in Database", e);
             }
     }

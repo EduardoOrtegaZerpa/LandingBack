@@ -1,5 +1,6 @@
 package com.eduortza.api.application.service.Project;
 
+import com.eduortza.api.adapter.exception.NonExistsException;
 import com.eduortza.api.application.exception.FileManagerException;
 import com.eduortza.api.application.exception.LoadingException;
 import com.eduortza.api.application.port.in.Project.modify.ModifyProjectCommand;
@@ -71,7 +72,10 @@ public class ModifyProjectService implements ModifyProjectPort {
 
             try {
                 updateProjectPort.update(project);
-            } catch (Exception e) {
+            } catch (NonExistsException e) {
+                throw new StoreException("Project not found", e);
+            }
+            catch (Exception e) {
                 throw new StoreException("Error while trying to update in Database", e);
             }
     }

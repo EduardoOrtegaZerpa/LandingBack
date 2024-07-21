@@ -1,5 +1,6 @@
 package com.eduortza.api.application.service.Trajectory;
 
+import com.eduortza.api.adapter.exception.NonExistsException;
 import com.eduortza.api.application.exception.LoadingException;
 import com.eduortza.api.application.port.in.Trajectory.load.LoadTrajectoryPort;
 import com.eduortza.api.application.port.out.Trajectory.GetTrajectoryPort;
@@ -21,7 +22,10 @@ public class LoadTrajectoryService implements LoadTrajectoryPort {
     public Trajectory loadTrajectory() {
         try {
             return getTrajectoryPort.getTrajectory();
-        } catch (Exception e) {
+        } catch (NonExistsException e) {
+            throw new LoadingException("No Trajectory entity found.", e);
+        }
+        catch (Exception e) {
             throw new LoadingException("Error while trying to load from Database", e);
         }
     }

@@ -1,5 +1,6 @@
 package com.eduortza.api.application.service.BlogPost;
 
+import com.eduortza.api.adapter.exception.NonExistsException;
 import com.eduortza.api.application.exception.DeleteException;
 import com.eduortza.api.application.exception.FileManagerException;
 import com.eduortza.api.application.port.in.BlogPost.remove.RemoveBlogPostPort;
@@ -29,6 +30,8 @@ public class RemoveBlogPostService implements RemoveBlogPostPort {
             String imageUrl = getBlogPostPort.get(id).getImageUrl();
             filePort.deleteFile(imageUrl);
             deleteBlogPostPort.delete(id);
+        } catch (NonExistsException e) {
+            throw new NonExistsException("BlogPost with id " + id + " does not exist", e);
         } catch (Exception e) {
             throw new DeleteException("Error while trying to delete from Database", e);
         }

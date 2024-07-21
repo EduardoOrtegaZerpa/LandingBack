@@ -1,5 +1,6 @@
 package com.eduortza.api.application.service.Project;
 
+import com.eduortza.api.adapter.exception.NonExistsException;
 import com.eduortza.api.application.exception.LoadingException;
 import com.eduortza.api.application.port.in.Project.load.LoadProjectPort;
 import com.eduortza.api.application.port.out.Project.GetProjectPort;
@@ -21,7 +22,10 @@ public class LoadProjectService implements LoadProjectPort {
     public Project loadProject(long id) {
         try {
             return getProjectPort.get(id);
-        } catch (Exception e) {
+        } catch (NonExistsException e) {
+            throw new LoadingException("Project not found", e);
+        }
+        catch (Exception e) {
             throw new LoadingException("Error while trying to load from Database", e);
         }
     }

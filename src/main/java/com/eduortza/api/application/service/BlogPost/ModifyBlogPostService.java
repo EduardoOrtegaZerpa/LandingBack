@@ -1,5 +1,6 @@
 package com.eduortza.api.application.service.BlogPost;
 
+import com.eduortza.api.adapter.exception.NonExistsException;
 import com.eduortza.api.adapter.in.web.User.LoadUserController;
 import com.eduortza.api.application.exception.FileManagerException;
 import com.eduortza.api.application.exception.LoadingException;
@@ -80,6 +81,8 @@ public class ModifyBlogPostService implements ModifyBlogPostPort {
 
         try {
             updateBlogPostPort.update(blogPost);
+        } catch (NonExistsException e) {
+            throw new StoreException("Error while trying to update in Database", e);
         } catch (Exception e) {
             throw new StoreException("Error while trying to update in Database", e);
         }

@@ -25,7 +25,7 @@ public class MailSystemAdapter implements MailPort {
     public void sendMail(String from, String subject, String body) {
         SimpleMailMessage mail = new SimpleMailMessage();
         mail.setFrom(from);
-        mail.setTo("eduardo@localhost");
+        mail.setTo("eduardo@eduortza.com");
         mail.setSubject(subject);
         mail.setText(body);
 
@@ -36,7 +36,7 @@ public class MailSystemAdapter implements MailPort {
         SimpleMailMessage mail = new SimpleMailMessage();
         String body = generateHtmlBodyWithToken(token);
 
-        mail.setFrom("noreply@localhost");
+        mail.setFrom("noreply@eduortza.com");
         mail.setTo(to);
         mail.setSubject(subject);
         mail.setText(body);
@@ -47,7 +47,7 @@ public class MailSystemAdapter implements MailPort {
 
 
     String generateHtmlBodyWithToken(String token){
-        String htmlBody = "<h1>Click the link to unsn</h1><a href='http://eduortza.com:8080/subscribe/"+token+"'>Confirm</a>";
+        String htmlBody = "<h1>Click the link to unsubscribe</h1><a href='http://eduortza.com:8080/subscribe/"+token+"'>Confirm</a>";
         return htmlBody;
     }
 

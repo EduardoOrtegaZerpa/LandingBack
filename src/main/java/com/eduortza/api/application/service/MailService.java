@@ -21,10 +21,7 @@ public class MailService implements SendMailPort {
         try {
             String subject = command.getSubject() + " | from " + command.getName();
             mailPort.sendMail(command.getFrom(), command.getSubject(), command.getText());
-        } catch (AlreadyExistsException e) {
-            throw new AlreadyExistsException("Mail already exists", e);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new MailException("Error sending mail", e);
         }
     }

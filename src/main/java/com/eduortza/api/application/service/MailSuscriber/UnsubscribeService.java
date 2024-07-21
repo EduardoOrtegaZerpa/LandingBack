@@ -1,5 +1,6 @@
 package com.eduortza.api.application.service.MailSuscriber;
 
+import com.eduortza.api.adapter.exception.NonExistsException;
 import com.eduortza.api.application.exception.DeleteException;
 import com.eduortza.api.application.port.in.MailSubscriber.unsubscribe.UnsubscribePort;
 import com.eduortza.api.application.port.out.MailSuscriber.DeleteMailSubscriberPort;
@@ -18,7 +19,10 @@ public class UnsubscribeService implements UnsubscribePort {
     public void unsubscribe(String email) {
         try {
             deleteMailSubscriberPort.delete(email);
-        } catch (Exception e) {
+        } catch (NonExistsException e) {
+            throw new DeleteException("MailSubscriber not found", e);
+        }
+        catch (Exception e) {
             throw new DeleteException("Error while trying to delete in Database", e);
         }
     }
