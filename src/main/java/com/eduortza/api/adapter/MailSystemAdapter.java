@@ -33,7 +33,7 @@ public class MailSystemAdapter implements MailPort {
         mail.setSubject(subject);
         mail.setText(body);
 
-//        javaMailSender.send(mail);
+        javaMailSender.send(mail);
     }
 
     public void sendMailTo(String to, String subject, String token) {
@@ -45,7 +45,7 @@ public class MailSystemAdapter implements MailPort {
         mail.setSubject(subject);
         mail.setText(body);
 
-        //javaMailSender.send(mail);
+        javaMailSender.send(mail);
 
     }
 
