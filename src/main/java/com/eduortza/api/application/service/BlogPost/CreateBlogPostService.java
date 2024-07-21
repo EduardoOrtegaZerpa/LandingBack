@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.eduortza.api.common.UseCase;
+import org.springframework.beans.factory.annotation.Value;
 
 @UseCase
 public class CreateBlogPostService implements CreateBlogPostPort {
@@ -26,6 +27,9 @@ public class CreateBlogPostService implements CreateBlogPostPort {
     private final FilePort filePort;
     private final MailPort mailPort;
     private final GetMailSubscriberPort getMailSubscriberPort;
+
+    @Value("${app.image.base.url}")
+    private String imageBaseUrl;
 
 
     public CreateBlogPostService(
@@ -53,7 +57,8 @@ public class CreateBlogPostService implements CreateBlogPostPort {
 
         try{
             String fileName = filePort.saveFile(createBlogPostCommand.getImage(), "src/main/resources/static/images");
-            blogPost.setImageUrl("http://localhost:8080/images/" + fileName);
+            String imageUrl = imageBaseUrl + fileName;
+            blogPost.setImageUrl(imageUrl);
         } catch (Exception e) {
             throw new FileManagerException("Error while trying to store image", e);
         }

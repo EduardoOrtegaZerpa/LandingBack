@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Repository;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
@@ -15,6 +16,9 @@ import java.util.List;
 public class MailSystemAdapter implements MailPort {
 
     private final JavaMailSender javaMailSender;
+
+    @Value("${app.base.url}")
+    private String baseUrl;
 
     @Autowired
     public MailSystemAdapter(JavaMailSender javaMailSender) {
@@ -46,8 +50,9 @@ public class MailSystemAdapter implements MailPort {
     }
 
 
-    String generateHtmlBodyWithToken(String token){
-        String htmlBody = "<h1>Click the link to unsubscribe</h1><a href='http://eduortza.com:8080/subscribe/"+token+"'>Confirm</a>";
+    public String generateHtmlBodyWithToken(String token) {
+        String unsubscribeUrl = baseUrl + "/unsubscribe/" + token;
+        String htmlBody = "<h1>Click the link to unsubscribe</h1><a href='" + unsubscribeUrl + "'>Confirm</a>";
         return htmlBody;
     }
 

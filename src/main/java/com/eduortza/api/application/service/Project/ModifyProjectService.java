@@ -12,6 +12,7 @@ import com.eduortza.api.common.UseCase;
 import com.eduortza.api.domain.Project;
 import jakarta.transaction.Transactional;
 import com.eduortza.api.application.exception.StoreException;
+import org.springframework.beans.factory.annotation.Value;
 
 @UseCase
 public class ModifyProjectService implements ModifyProjectPort {
@@ -25,6 +26,9 @@ public class ModifyProjectService implements ModifyProjectPort {
         this.filePort = filePort;
         this.getProjectPort = getProjectPort;
     }
+
+    @Value("${app.image.base.url}")
+    private String imageBaseUrl;
 
     @Transactional
     @Override
@@ -63,7 +67,8 @@ public class ModifyProjectService implements ModifyProjectPort {
                      String fileName = project.getImageUrl().substring(project.getImageUrl().lastIndexOf("/") + 1);
                      filePort.deleteFile("src/main/resources/static/images/" + fileName);
                      String fileNameCommand = filePort.saveFile(modifyProjectCommand.getImage(), "src/main/resources/static/images");
-                     project.setImageUrl("http://localhost:8080/images/" + fileNameCommand);
+                     String imageUrl = imageBaseUrl + fileNameCommand;
+                     project.setImageUrl(imageUrl);
                  } catch (Exception e) {
                      throw new FileManagerException("Error while trying to store image", e);
                  }

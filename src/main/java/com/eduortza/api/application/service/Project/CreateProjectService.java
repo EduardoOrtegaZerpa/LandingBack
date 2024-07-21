@@ -10,6 +10,7 @@ import com.eduortza.api.common.UseCase;
 import com.eduortza.api.domain.Project;
 import jakarta.transaction.Transactional;
 import com.eduortza.api.application.exception.StoreException;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Date;
 
@@ -18,6 +19,9 @@ public class CreateProjectService implements CreateProjectPort {
 
     private final StoreProjectPort storeProjectPort;
     private final FilePort filePort;
+
+    @Value("${app.image.base.url}")
+    private String imageBaseUrl;
 
     public CreateProjectService(StoreProjectPort storeProjectPort, FilePort filePort) {
         this.storeProjectPort = storeProjectPort;
@@ -39,7 +43,8 @@ public class CreateProjectService implements CreateProjectPort {
 
             try {
                 String fileName = filePort.saveFile(createProjectCommand.getImage(), "src/main/resources/static/images");
-                project.setImageUrl("http://localhost:8080/images/" + fileName);
+                String imageUrl = imageBaseUrl + fileName;
+                project.setImageUrl(imageUrl);
             } catch (Exception e) {
                 throw new FileManagerException("Error while trying to store image", e);
             }

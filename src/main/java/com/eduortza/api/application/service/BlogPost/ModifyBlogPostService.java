@@ -15,6 +15,7 @@ import com.eduortza.api.domain.BlogPost;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 
 @UseCase
@@ -24,6 +25,9 @@ public class ModifyBlogPostService implements ModifyBlogPostPort {
     private final FilePort filePort;
     private final GetBlogPostPort getBlogPostPort;
     private static final Logger logger = LoggerFactory.getLogger(ModifyBlogPostService.class);
+
+    @Value("${app.image.base.url}")
+    private String imageBaseUrl;
 
     public ModifyBlogPostService(UpdateBlogPostPort updateBlogPostPort, FilePort filePort, GetBlogPostPort getBlogPostPort) {
         this.updateBlogPostPort = updateBlogPostPort;
@@ -72,7 +76,8 @@ public class ModifyBlogPostService implements ModifyBlogPostPort {
                 String fileName = blogPost.getImageUrl().substring(blogPost.getImageUrl().lastIndexOf("/") + 1);
                 filePort.deleteFile("src/main/resources/static/images/" + fileName);
                 String fileNameCommand = filePort.saveFile(modifyBlogPostCommand.getImage(), "src/main/resources/static/images");
-                blogPost.setImageUrl("http://localhost:8080/images/" + fileNameCommand);
+                String imageUrl = imageBaseUrl + fileNameCommand;
+                blogPost.setImageUrl(imageUrl);
             } catch (Exception e) {
                 throw new FileManagerException("Error while trying to store image", e);
             }
