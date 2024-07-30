@@ -6,6 +6,7 @@ import com.eduortza.api.application.port.in.MailSubscriber.subscribe.SubscribePo
 import com.eduortza.api.application.port.out.MailSuscriber.StoreMailSubscriberPort;
 import com.eduortza.api.common.UseCase;
 import com.eduortza.api.domain.MailSuscriber;
+import jakarta.transaction.Transactional;
 
 @UseCase
 public class SubscribeService implements SubscribePort {
@@ -16,6 +17,7 @@ public class SubscribeService implements SubscribePort {
         this.storeMailSubscriberPort = storeMailSubscriberPort;
     }
 
+    @Transactional
     @Override
     public void subscribe(String email) throws StoreException {
         MailSuscriber mailSuscriber = new MailSuscriber();
