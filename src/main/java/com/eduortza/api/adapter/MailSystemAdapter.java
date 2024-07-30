@@ -1,14 +1,16 @@
 package com.eduortza.api.adapter;
-
+import com.eduortza.api.adapter.in.web.WelcomeController;
 import com.eduortza.api.application.port.out.MailPort;
-
 import com.eduortza.api.domain.MailSuscriber;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Repository;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -16,6 +18,7 @@ import java.util.List;
 public class MailSystemAdapter implements MailPort {
 
     private final JavaMailSender javaMailSender;
+    Logger logger = LoggerFactory.getLogger(MailSystemAdapter.class);
 
     @Value("${app.base.url}")
     private String baseUrl;
@@ -33,7 +36,8 @@ public class MailSystemAdapter implements MailPort {
         mail.setSubject(subject);
         mail.setText(body);
 
-//        javaMailSender.send(mail);
+        logger.info("Sending mail to: " + Arrays.toString(mail.getTo()));
+        javaMailSender.send(mail);
     }
 
     public void sendMailTo(String to, String subject, String token) {
@@ -45,7 +49,8 @@ public class MailSystemAdapter implements MailPort {
         mail.setSubject(subject);
         mail.setText(body);
 
-        //javaMailSender.send(mail);
+        logger.info("Sending a new mail to: " + to);
+        javaMailSender.send(mail);
 
     }
 

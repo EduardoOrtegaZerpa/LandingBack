@@ -1,7 +1,6 @@
 package com.eduortza.api.application.service.BlogPost;
 
 import com.eduortza.api.adapter.exception.NonExistsException;
-import com.eduortza.api.adapter.in.web.User.LoadUserController;
 import com.eduortza.api.application.exception.FileManagerException;
 import com.eduortza.api.application.exception.LoadingException;
 import com.eduortza.api.application.exception.StoreException;
@@ -13,8 +12,6 @@ import com.eduortza.api.application.port.out.FilePort;
 import com.eduortza.api.common.UseCase;
 import com.eduortza.api.domain.BlogPost;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
 
@@ -24,7 +21,6 @@ public class ModifyBlogPostService implements ModifyBlogPostPort {
     private final UpdateBlogPostPort updateBlogPostPort;
     private final FilePort filePort;
     private final GetBlogPostPort getBlogPostPort;
-    private static final Logger logger = LoggerFactory.getLogger(ModifyBlogPostService.class);
 
     @Value("${app.image.base.url}")
     private String imageBaseUrl;
