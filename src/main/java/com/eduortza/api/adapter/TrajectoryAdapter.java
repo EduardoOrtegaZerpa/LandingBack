@@ -4,6 +4,7 @@ import com.eduortza.api.adapter.exception.NonExistsException;
 import com.eduortza.api.adapter.out.persistence.entities.TrajectoryEntity;
 import com.eduortza.api.adapter.out.persistence.mappers.TrajectoryMapper;
 import com.eduortza.api.adapter.out.persistence.repository.SpringTrajectoryRepository;
+import com.eduortza.api.application.exception.StoreException;
 import com.eduortza.api.application.port.out.Trajectory.GetTrajectoryPort;
 import com.eduortza.api.application.port.out.Trajectory.UpdateTrajectoryPort;
 import com.eduortza.api.domain.Trajectory;
@@ -39,6 +40,10 @@ public class TrajectoryAdapter implements GetTrajectoryPort, UpdateTrajectoryPor
             throw new NonExistsException("Trajectory with id " + trajectory.getId() + " does not exist");
         }
 
-        springTrajectoryRepository.save(TrajectoryMapper.mapToEntity(trajectory));
+        try {
+            springTrajectoryRepository.save(TrajectoryMapper.mapToEntity(trajectory));
+        } catch (Exception e) {
+            throw new StoreException("Error updating Trajectory entity.");
+        }
     }
 }

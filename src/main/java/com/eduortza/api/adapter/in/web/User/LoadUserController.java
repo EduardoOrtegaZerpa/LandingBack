@@ -10,12 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RestController
 public class LoadUserController {
@@ -23,9 +18,6 @@ public class LoadUserController {
     private final LoadUserPort loadUserPort;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-
-    private static final Logger logger = LoggerFactory.getLogger(LoadUserController.class);
-
 
     public LoadUserController(LoadUserPort loadUserPort, AuthenticationManager authenticationManager, JwtService jwtService) {
         this.loadUserPort = loadUserPort;

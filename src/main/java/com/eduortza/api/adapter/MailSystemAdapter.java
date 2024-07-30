@@ -1,7 +1,6 @@
 package com.eduortza.api.adapter;
 
 import com.eduortza.api.application.port.out.MailPort;
-
 import com.eduortza.api.domain.MailSuscriber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;

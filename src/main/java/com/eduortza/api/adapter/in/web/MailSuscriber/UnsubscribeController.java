@@ -8,6 +8,7 @@ import com.eduortza.api.application.port.in.MailSubscriber.unsubscribe.Unsubscri
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +23,7 @@ public class UnsubscribeController {
             this.jwtService = jwtService;
      }
 
-     @DeleteMapping("/unsubscribe/{token}")
+     @GetMapping("/unsubscribe/{token}")
      public ResponseEntity<Object> unsubscribe(@PathVariable String token) {
          try {
              String email = jwtService.getEmailFromToken(token);
