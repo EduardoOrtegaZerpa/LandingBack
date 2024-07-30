@@ -5,6 +5,7 @@ import com.eduortza.api.application.exception.DeleteException;
 import com.eduortza.api.application.port.in.MailSubscriber.unsubscribe.UnsubscribePort;
 import com.eduortza.api.application.port.out.MailSuscriber.DeleteMailSubscriberPort;
 import com.eduortza.api.common.UseCase;
+import jakarta.transaction.Transactional;
 
 @UseCase
 public class UnsubscribeService implements UnsubscribePort {
@@ -15,6 +16,7 @@ public class UnsubscribeService implements UnsubscribePort {
         this.deleteMailSubscriberPort = deleteMailSubscriberPort;
     }
 
+    @Transactional
     @Override
     public void unsubscribe(String email) {
         try {
