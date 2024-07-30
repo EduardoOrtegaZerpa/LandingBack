@@ -1,7 +1,6 @@
 package com.eduortza.api.application.service.BlogPost;
 
 import com.eduortza.api.adapter.exception.AlreadyExistsException;
-import com.eduortza.api.adapter.in.web.User.LoadUserController;
 import com.eduortza.api.application.exception.FileManagerException;
 import com.eduortza.api.application.exception.StoreException;
 import com.eduortza.api.application.port.in.BlogPost.create.CreateBlogPostCommand;
@@ -16,6 +15,7 @@ import jakarta.transaction.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.eduortza.api.common.UseCase;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +27,8 @@ public class CreateBlogPostService implements CreateBlogPostPort {
     private final FilePort filePort;
     private final MailPort mailPort;
     private final GetMailSubscriberPort getMailSubscriberPort;
+
+    Logger logger = Logger.getLogger(CreateBlogPostService.class.getName());
 
     @Value("${app.image.base.url}")
     private String imageBaseUrl;
@@ -65,11 +67,11 @@ public class CreateBlogPostService implements CreateBlogPostPort {
 
         try {
             BlogPost storedBlogPost = storeBlogPostPort.store(blogPost);
-            List<MailSuscriber> mailSuscribers = getMailSubscriberPort.getAllMailSuscriber();
-            mailPort.sendMailToAllSubscribers(mailSuscribers, "New Blog Post: " + storedBlogPost.getTitle());
+            List<MailSuscriber> mailSubscribers = getMailSubscriberPort.getAllMailSuscriber();
+            mailPort.sendMailToBlogSubscribers(mailSubscribers, storedBlogPost);
             return storedBlogPost;
         } catch (AlreadyExistsException e) {
-            throw new StoreException("Error while trying to store in Database", e);
+            throw new AlreadyExistsException("BlogPost already exists", e);
         } catch (Exception e) {
             throw new StoreException("Error while trying to store in Database", e);
         }

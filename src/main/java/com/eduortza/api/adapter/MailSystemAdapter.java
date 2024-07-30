@@ -1,14 +1,23 @@
 package com.eduortza.api.adapter;
 
 import com.eduortza.api.application.port.out.MailPort;
+import com.eduortza.api.domain.BlogPost;
 import com.eduortza.api.domain.MailSuscriber;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Repository;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileCopyUtils;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Repository
@@ -35,31 +44,61 @@ public class MailSystemAdapter implements MailPort {
         javaMailSender.send(mail);
     }
 
-    public void sendMailTo(String to, String subject, String token) {
-        SimpleMailMessage mail = new SimpleMailMessage();
-        String body = generateHtmlBodyWithToken(token);
+    public void sendMailTo(String to, String subject, String content) {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, "utf-8");
 
-        mail.setFrom("noreply@eduortza.com");
-        mail.setTo(to);
-        mail.setSubject(subject);
-        mail.setText(body);
+        try {
+            messageHelper.setFrom("noreply@eduortza.com");
+            messageHelper.setTo(to);
+            messageHelper.setSubject(subject);
+            messageHelper.setText(content, true);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Error sending mail");
+        }
 
-        javaMailSender.send(mail);
-
+        try {
+            javaMailSender.send(mimeMessage);
+        } catch (Exception e) {
+            throw new RuntimeException("Error sending mail");
+        }
     }
 
 
-    public String generateHtmlBodyWithToken(String token) {
+    public String generateBlogHtmlWithToken(BlogPost blogPost, String token) {
         String unsubscribeUrl = baseUrl + "/unsubscribe/" + token;
-        String htmlBody = "<h1>Click the link to unsubscribe</h1><a href='" + unsubscribeUrl + "'>Confirm</a>";
-        return htmlBody;
+
+        String template;
+        try {
+            ClassPathResource resource = new ClassPathResource("templates/blog-post.html");
+            template = new String(FileCopyUtils.copyToByteArray(resource.getInputStream()), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException("Error loading template");
+        } catch (Exception e) {
+            throw new RuntimeException("Error loading template");
+        }
+
+        String tagsHtml = blogPost.getTags().stream()
+                .map(tag -> "<span class='tag'>" + tag + "</span>")
+                .collect(Collectors.joining(""));
+
+        return template
+                .replace("<!--TITLE-->", blogPost.getTitle())
+                .replace("<!--IMAGE_URL-->", blogPost.getImageUrl())
+                .replace("<!--DESCRIPTION-->", blogPost.getDescription())
+                .replace("<!--CONTENT-->", blogPost.getContent())
+                .replace("<!--MINUTES_TO_READ-->", String.valueOf(blogPost.getMinutesToRead()))
+                .replace("<!--TAGS-->", tagsHtml)
+                .replace("<!--UNSUBSCRIBE_URL-->", unsubscribeUrl);
     }
 
 
     @Override
-    public void sendMailToAllSubscribers(List<MailSuscriber> toList, String subject) {
+    public void sendMailToBlogSubscribers(List<MailSuscriber> toList, BlogPost blogPost) {
         for (MailSuscriber mailSuscriber : toList) {
-            sendMailTo(mailSuscriber.getEmail(), subject, mailSuscriber.getToken());
+            String htmlBody = generateBlogHtmlWithToken(blogPost, mailSuscriber.getToken());
+            String subject = "New blog post: " + blogPost.getTitle();
+            sendMailTo(mailSuscriber.getEmail(), subject, htmlBody);
         }
     }
 
