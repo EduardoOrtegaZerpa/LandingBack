@@ -81,7 +81,6 @@ public class MailSystemAdapter implements MailPort {
                 .replace("<!--TITLE-->", blogPost.getTitle())
                 .replace("<!--IMAGE_URL-->", blogPost.getImageUrl())
                 .replace("<!--DESCRIPTION-->", blogPost.getDescription())
-                .replace("<!--CONTENT-->", blogPost.getContent())
                 .replace("<!--MINUTES_TO_READ-->", String.valueOf(blogPost.getMinutesToRead()))
                 .replace("<!--UNSUBSCRIBE_URL-->", unsubscribeUrl);
     }
