@@ -17,6 +17,7 @@ import org.springframework.util.FileCopyUtils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
@@ -24,6 +25,8 @@ import java.util.stream.Collectors;
 public class MailSystemAdapter implements MailPort {
 
     private final JavaMailSender javaMailSender;
+
+    Logger logger = Logger.getLogger(MailSystemAdapter.class.getName());
 
     @Value("${app.base.url}")
     private String baseUrl;
@@ -60,6 +63,7 @@ public class MailSystemAdapter implements MailPort {
         try {
             javaMailSender.send(mimeMessage);
         } catch (Exception e) {
+            logger.info("Error sending mail");
             throw new RuntimeException("Error sending mail");
         }
     }
@@ -73,8 +77,10 @@ public class MailSystemAdapter implements MailPort {
             ClassPathResource resource = new ClassPathResource("templates/blog-post.html");
             template = new String(FileCopyUtils.copyToByteArray(resource.getInputStream()), StandardCharsets.UTF_8);
         } catch (IOException e) {
+            logger.info("Error loading template");
             throw new RuntimeException("Error loading template");
         } catch (Exception e) {
+            logger.info("Error loading template");
             throw new RuntimeException("Error loading template");
         }
 
