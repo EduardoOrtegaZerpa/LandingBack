@@ -15,7 +15,6 @@ import jakarta.transaction.Transactional;
 
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import com.eduortza.api.common.UseCase;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,8 +26,6 @@ public class CreateBlogPostService implements CreateBlogPostPort {
     private final FilePort filePort;
     private final MailPort mailPort;
     private final GetMailSubscriberPort getMailSubscriberPort;
-
-    Logger logger = Logger.getLogger(CreateBlogPostService.class.getName());
 
     @Value("${app.image.base.url}")
     private String imageBaseUrl;
