@@ -27,6 +27,9 @@ public class MailSystemAdapter implements MailPort {
     @Value("${app.base.url}")
     private String baseUrl;
 
+    @Value("${frontend.url}")
+    private String frontendUrl;
+
     @Autowired
     public MailSystemAdapter(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
@@ -66,6 +69,7 @@ public class MailSystemAdapter implements MailPort {
 
     public String generateBlogHtmlWithToken(BlogPost blogPost, String token) {
         String unsubscribeUrl = baseUrl + "/unsubscribe/" + token;
+        String frontendUrl = baseUrl + "/blog/" + blogPost.getId();
 
         String template;
         try {
@@ -79,7 +83,7 @@ public class MailSystemAdapter implements MailPort {
 
         return template
                 .replace("<!--TITLE-->", blogPost.getTitle())
-                .replace("<!--IMAGE_URL-->", blogPost.getImageUrl())
+                .replace("<!--POST_URL-->", frontendUrl)
                 .replace("<!--DESCRIPTION-->", blogPost.getDescription())
                 .replace("<!--MINUTES_TO_READ-->", String.valueOf(blogPost.getMinutesToRead()))
                 .replace("<!--UNSUBSCRIBE_URL-->", unsubscribeUrl);
