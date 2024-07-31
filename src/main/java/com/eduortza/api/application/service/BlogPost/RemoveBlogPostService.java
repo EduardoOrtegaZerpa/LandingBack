@@ -28,7 +28,8 @@ public class RemoveBlogPostService implements RemoveBlogPostPort {
     public void removeBlogPost(Long id) {
         try {
             String imageUrl = getBlogPostPort.get(id).getImageUrl();
-            filePort.deleteFile(imageUrl);
+            String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+            filePort.deleteFile(fileName);
             deleteBlogPostPort.delete(id);
         } catch (NonExistsException e) {
             throw new NonExistsException("BlogPost with id " + id + " does not exist", e);
@@ -43,7 +44,9 @@ public class RemoveBlogPostService implements RemoveBlogPostPort {
         try {
             getBlogPostPort.getAll().forEach(blogPost -> {
                 try {
-                    filePort.deleteFile(blogPost.getImageUrl());
+                    String imageUrl = blogPost.getImageUrl();
+                    String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+                    filePort.deleteFile(fileName);
                 } catch (Exception e) {
                     throw new FileManagerException("Error while trying to delete image from Database", e);
                 }

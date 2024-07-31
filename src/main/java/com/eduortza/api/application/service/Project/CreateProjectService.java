@@ -42,7 +42,7 @@ public class CreateProjectService implements CreateProjectPort {
 
 
             try {
-                String fileName = filePort.saveFile(createProjectCommand.getImage(), "src/main/resources/static/images");
+                String fileName = filePort.saveFile(createProjectCommand.getImage());
                 String imageUrl = imageBaseUrl + fileName;
                 project.setImageUrl(imageUrl);
             } catch (Exception e) {

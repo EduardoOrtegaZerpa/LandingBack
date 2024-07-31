@@ -19,7 +19,7 @@ public class FileService implements SaveFilePort {
     @Override
     public void saveFile(SaveFileCommand command) throws IOException {
         try {
-            filePort.saveFile(command.getFile(), command.getPath());
+            filePort.saveFile(command.getFile());
         } catch (Exception e) {
             throw new IOException(e);
         }

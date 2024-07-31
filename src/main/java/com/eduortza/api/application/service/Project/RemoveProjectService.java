@@ -27,7 +27,8 @@ public class RemoveProjectService implements RemoveProjectPort {
     public void removeProject(long id) {
         try {
             String imageUrl = getProjectPort.get(id).getImageUrl();
-            filePort.deleteFile("src/main/resources/static/" + imageUrl);
+            String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+            filePort.deleteFile(fileName);
             deleteProjectPort.delete(id);
         } catch (NonExistsException e) {
             throw new DeleteException("Project not found", e);
@@ -43,7 +44,9 @@ public class RemoveProjectService implements RemoveProjectPort {
         try {
             getProjectPort.getAll().forEach(project -> {
                 try {
-                    filePort.deleteFile("src/main/resources/static/" + project.getImageUrl());
+                    String imageUrl = project.getImageUrl();
+                    String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+                    filePort.deleteFile(fileName);
                 } catch (Exception e) {
                     throw new DeleteException("Error while trying to delete from Database", e);
                 }

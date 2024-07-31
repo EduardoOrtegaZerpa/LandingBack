@@ -58,7 +58,7 @@ public class CreateBlogPostService implements CreateBlogPostPort {
         blogPost.setCreated(new Date());
 
         try{
-            String fileName = filePort.saveFile(createBlogPostCommand.getImage(), "src/main/resources/static/images");
+            String fileName = filePort.saveFile(createBlogPostCommand.getImage());
             String imageUrl = imageBaseUrl + fileName;
             blogPost.setImageUrl(imageUrl);
         } catch (Exception e) {

@@ -70,8 +70,8 @@ public class ModifyBlogPostService implements ModifyBlogPostPort {
         if (modifyBlogPostCommand.getImage() != null) {
             try {
                 String fileName = blogPost.getImageUrl().substring(blogPost.getImageUrl().lastIndexOf("/") + 1);
-                filePort.deleteFile("src/main/resources/static/images/" + fileName);
-                String fileNameCommand = filePort.saveFile(modifyBlogPostCommand.getImage(), "src/main/resources/static/images");
+                filePort.deleteFile(fileName);
+                String fileNameCommand = filePort.saveFile(modifyBlogPostCommand.getImage());
                 String imageUrl = imageBaseUrl + fileNameCommand;
                 blogPost.setImageUrl(imageUrl);
             } catch (Exception e) {
