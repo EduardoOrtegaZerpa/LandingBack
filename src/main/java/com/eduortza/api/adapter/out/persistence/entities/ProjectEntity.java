@@ -19,10 +19,9 @@ public class ProjectEntity {
     private long id;
     @Column(nullable = false)
     private String title;
-    @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
     @Column(nullable = false)
     private Date created;
