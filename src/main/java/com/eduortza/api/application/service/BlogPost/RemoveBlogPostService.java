@@ -36,7 +36,7 @@ public class RemoveBlogPostService implements RemoveBlogPostPort {
         } catch (DeleteException e) {
             throw new DeleteException("Error while trying to delete from Database", e);
         } catch (FileManagerException e) {
-            throw new FileManagerException("Error while trying to delete image from Database", e);
+            throw new FileManagerException("Error while trying to delete image: " + e.getMessage(), e);
         } catch (Exception e) {
             throw new RuntimeException("An error has occurred: " + e.getMessage(), e);
         }

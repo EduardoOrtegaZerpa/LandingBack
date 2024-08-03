@@ -75,11 +75,9 @@ public class ModifyBlogPostService implements ModifyBlogPostPort {
                 String fileNameCommand = filePort.saveFile(modifyBlogPostCommand.getImage());
                 String imageUrl = imageBaseUrl + fileNameCommand;
                 blogPost.setImageUrl(imageUrl);
-            } catch (DeleteException e) {
-                throw new DeleteException("Error while trying to delete image from Database", e);
             } catch (FileManagerException e) {
-                throw new FileManagerException("Error while trying to save image in Database", e);
-            } catch (RuntimeException e) {
+                throw new FileManagerException("Error while trying to save/delete image " + e.getMessage(), e);
+            } catch (Exception e) {
                 throw new RuntimeException("An error has occurred: " + e.getMessage(), e);
             }
 
