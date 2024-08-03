@@ -32,7 +32,7 @@ public class RemoveProjectController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (JwtAuthorizationException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        } catch (ProjectException e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
@@ -47,7 +47,7 @@ public class RemoveProjectController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (JwtAuthorizationException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        } catch (ProjectException e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }

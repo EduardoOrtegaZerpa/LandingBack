@@ -23,7 +23,7 @@ public class LoadTrajectoryService implements LoadTrajectoryPort {
         try {
             return getTrajectoryPort.getTrajectory();
         } catch (NonExistsException e) {
-            throw new LoadingException("No Trajectory entity found.", e);
+            throw new NonExistsException("No Trajectory entity found.", e);
         }
         catch (Exception e) {
             throw new LoadingException("Error while trying to load from Database", e);

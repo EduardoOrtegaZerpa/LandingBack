@@ -52,7 +52,7 @@ public class CreateProjectService implements CreateProjectPort {
             try {
                 return storeProjectPort.store(project);
             } catch (AlreadyExistsException e) {
-                throw new StoreException("Project already exists", e);
+                throw new AlreadyExistsException("Project already exists", e);
             }
             catch (Exception e) {
                 throw new StoreException("Error while trying to store in Database", e);

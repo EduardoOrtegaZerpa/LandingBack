@@ -2,6 +2,7 @@ package com.eduortza.api.application.service.BlogPost;
 
 import com.eduortza.api.adapter.exception.AlreadyExistsException;
 import com.eduortza.api.application.exception.FileManagerException;
+import com.eduortza.api.application.exception.MailException;
 import com.eduortza.api.application.exception.StoreException;
 import com.eduortza.api.application.port.in.BlogPost.create.CreateBlogPostCommand;
 import com.eduortza.api.application.port.in.BlogPost.create.CreateBlogPostPort;
@@ -59,18 +60,22 @@ public class CreateBlogPostService implements CreateBlogPostPort {
             String imageUrl = imageBaseUrl + fileName;
             blogPost.setImageUrl(imageUrl);
         } catch (Exception e) {
-            throw new FileManagerException("Error while trying to store image", e);
+            throw new FileManagerException("Error while trying to store image: " + e.getMessage(), e);
         }
 
         try {
             BlogPost storedBlogPost = storeBlogPostPort.store(blogPost);
-            List<MailSuscriber> mailSubscribers = getMailSubscriberPort.getAllMailSuscriber();
+            List<MailSuscriber> mailSubscribers = getMailSubscriberPort.getAllMailSubscriber();
             mailPort.sendMailToBlogSubscribers(mailSubscribers, storedBlogPost);
             return storedBlogPost;
         } catch (AlreadyExistsException e) {
             throw new AlreadyExistsException("BlogPost already exists", e);
-        } catch (Exception e) {
+        } catch (MailException e) {
+            throw new MailException("Error while trying to send mail:" + e.getMessage(), e);
+        } catch (StoreException e) {
             throw new StoreException("Error while trying to store in Database", e);
+        } catch (Exception e) {
+            throw new RuntimeException("An error has occurred: " + e.getMessage(), e);
         }
 
     }

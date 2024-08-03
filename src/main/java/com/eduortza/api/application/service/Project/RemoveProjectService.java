@@ -2,6 +2,7 @@ package com.eduortza.api.application.service.Project;
 
 import com.eduortza.api.adapter.exception.NonExistsException;
 import com.eduortza.api.application.exception.DeleteException;
+import com.eduortza.api.application.exception.FileManagerException;
 import com.eduortza.api.application.port.in.Project.remove.RemoveProjectPort;
 import com.eduortza.api.application.port.out.FilePort;
 import com.eduortza.api.application.port.out.Project.DeleteProjectPort;
@@ -31,7 +32,7 @@ public class RemoveProjectService implements RemoveProjectPort {
             filePort.deleteFile(fileName);
             deleteProjectPort.delete(id);
         } catch (NonExistsException e) {
-            throw new DeleteException("Project not found", e);
+            throw new NonExistsException("Project not found", e);
         }
         catch (Exception e) {
             throw new DeleteException("Error while trying to delete from Database", e);
@@ -48,7 +49,7 @@ public class RemoveProjectService implements RemoveProjectPort {
                     String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
                     filePort.deleteFile(fileName);
                 } catch (Exception e) {
-                    throw new DeleteException("Error while trying to delete from Database", e);
+                    throw new FileManagerException("Error while trying to delete image: " + e.getMessage(), e);
                 }
             });
             deleteProjectPort.deleteAll();

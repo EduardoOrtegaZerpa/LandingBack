@@ -4,6 +4,7 @@ import com.eduortza.api.adapter.exception.NonExistsException;
 import com.eduortza.api.adapter.out.persistence.mappers.UserMapper;
 import com.eduortza.api.adapter.out.persistence.repository.SpringUserRepository;
 
+import com.eduortza.api.application.exception.StoreException;
 import com.eduortza.api.application.port.out.User.GetUserPort;
 import com.eduortza.api.application.port.out.User.UpdateUserPort;
 import com.eduortza.api.domain.User;
@@ -19,7 +20,7 @@ public class UserAdapter implements GetUserPort, UpdateUserPort {
     }
 
     @Override
-    public void update(User user) throws Exception {
+    public void update(User user) throws NonExistsException, StoreException {
         if (user == null) {
             throw new NullPointerException("User is null");
         }
@@ -28,12 +29,16 @@ public class UserAdapter implements GetUserPort, UpdateUserPort {
             throw new NonExistsException("User with id " + user.getId() + " does not exist");
         }
 
-        springUserRepository.save(UserMapper.mapToEntity(user));
+        try {
+            springUserRepository.save(UserMapper.mapToEntity(user));
+        } catch (Exception e) {
+            throw new StoreException("Error updating User entity.");
+        }
     }
 
 
     @Override
-    public User get(String username) {
+    public User get(String username) throws NonExistsException {
         if (username == null) {
             throw new NullPointerException("Username or password is null");
         }
@@ -42,7 +47,7 @@ public class UserAdapter implements GetUserPort, UpdateUserPort {
     }
 
     @Override
-    public User get(long id) {
+    public User get(long id) throws NonExistsException {
         if (!springUserRepository.existsById(id)) {
             throw new NonExistsException("User with id " + id + " does not exist");
         }

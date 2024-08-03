@@ -70,7 +70,7 @@ public class ModifyProjectService implements ModifyProjectPort {
                      String imageUrl = imageBaseUrl + fileNameCommand;
                      project.setImageUrl(imageUrl);
                  } catch (Exception e) {
-                     throw new FileManagerException("Error while trying to store image", e);
+                     throw new FileManagerException("Error while trying to store image: " + e.getMessage(), e);
                  }
             }
 
@@ -78,9 +78,8 @@ public class ModifyProjectService implements ModifyProjectPort {
             try {
                 updateProjectPort.update(project);
             } catch (NonExistsException e) {
-                throw new StoreException("Project not found", e);
-            }
-            catch (Exception e) {
+                throw new NonExistsException("Project not found", e);
+            } catch (Exception e) {
                 throw new StoreException("Error while trying to update in Database", e);
             }
     }

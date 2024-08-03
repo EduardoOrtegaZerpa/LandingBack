@@ -23,7 +23,7 @@ public class LoadProjectService implements LoadProjectPort {
         try {
             return getProjectPort.get(id);
         } catch (NonExistsException e) {
-            throw new LoadingException("Project not found", e);
+            throw new NonExistsException("Project not found", e);
         }
         catch (Exception e) {
             throw new LoadingException("Error while trying to load from Database", e);

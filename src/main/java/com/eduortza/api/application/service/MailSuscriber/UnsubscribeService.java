@@ -22,7 +22,7 @@ public class UnsubscribeService implements UnsubscribePort {
         try {
             deleteMailSubscriberPort.delete(email);
         } catch (NonExistsException e) {
-            throw new DeleteException("MailSubscriber not found", e);
+            throw new NonExistsException("MailSubscriber not found", e);
         }
         catch (Exception e) {
             throw new DeleteException("Error while trying to delete in Database", e);

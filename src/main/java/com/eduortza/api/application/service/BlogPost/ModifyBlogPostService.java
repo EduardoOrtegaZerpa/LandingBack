@@ -1,6 +1,7 @@
 package com.eduortza.api.application.service.BlogPost;
 
 import com.eduortza.api.adapter.exception.NonExistsException;
+import com.eduortza.api.application.exception.DeleteException;
 import com.eduortza.api.application.exception.FileManagerException;
 import com.eduortza.api.application.exception.LoadingException;
 import com.eduortza.api.application.exception.StoreException;
@@ -74,18 +75,21 @@ public class ModifyBlogPostService implements ModifyBlogPostPort {
                 String fileNameCommand = filePort.saveFile(modifyBlogPostCommand.getImage());
                 String imageUrl = imageBaseUrl + fileNameCommand;
                 blogPost.setImageUrl(imageUrl);
-            } catch (Exception e) {
-                throw new FileManagerException("Error while trying to store image", e);
+            } catch (DeleteException e) {
+                throw new DeleteException("Error while trying to delete image from Database", e);
+            } catch (FileManagerException e) {
+                throw new FileManagerException("Error while trying to save image in Database", e);
+            } catch (RuntimeException e) {
+                throw new RuntimeException("An error has occurred: " + e.getMessage(), e);
             }
+
         }
 
 
         try {
             updateBlogPostPort.update(blogPost);
-        } catch (NonExistsException e) {
-            throw new StoreException("Error while trying to update in Database", e);
         } catch (Exception e) {
-            throw new StoreException("Error while trying to update in Database", e);
+            throw new StoreException("Error while trying to store in database", e);
         }
 
     }

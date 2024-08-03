@@ -22,7 +22,7 @@ public class TrajectoryAdapter implements GetTrajectoryPort, UpdateTrajectoryPor
     }
 
     @Override
-    public Trajectory getTrajectory() {
+    public Trajectory getTrajectory() throws NonExistsException {
         List<TrajectoryEntity> entities = springTrajectoryRepository.findAll();
         if (entities.isEmpty()) {
             throw new NonExistsException("No Trajectory entity found.");
@@ -31,7 +31,7 @@ public class TrajectoryAdapter implements GetTrajectoryPort, UpdateTrajectoryPor
     }
 
     @Override
-    public void updateTrajectory(Trajectory trajectory) throws Exception {
+    public void updateTrajectory(Trajectory trajectory) throws StoreException, NonExistsException {
         if (trajectory == null) {
             throw new NullPointerException("Trajectory is null");
         }

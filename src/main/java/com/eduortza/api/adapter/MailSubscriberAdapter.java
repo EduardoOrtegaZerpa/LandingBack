@@ -6,6 +6,8 @@ import com.eduortza.api.adapter.out.persistence.entities.MailSuscriberEntity;
 import com.eduortza.api.adapter.out.persistence.mappers.MailSuscriberMapper;
 import com.eduortza.api.adapter.out.persistence.repository.SpringMailSuscriberRepository;
 import com.eduortza.api.adapter.out.persistence.services.JwtService;
+import com.eduortza.api.application.exception.DeleteException;
+import com.eduortza.api.application.exception.StoreException;
 import com.eduortza.api.application.port.out.MailSuscriber.DeleteMailSubscriberPort;
 import com.eduortza.api.application.port.out.MailSuscriber.GetMailSubscriberPort;
 import com.eduortza.api.application.port.out.MailSuscriber.StoreMailSubscriberPort;
@@ -26,7 +28,7 @@ public class MailSubscriberAdapter implements StoreMailSubscriberPort, DeleteMai
     }
 
     @Override
-    public void delete(String email) throws Exception {
+    public void delete(String email) throws DeleteException, NonExistsException {
         if (email == null) {
             throw new NullPointerException("Email is null");
         }
@@ -35,11 +37,15 @@ public class MailSubscriberAdapter implements StoreMailSubscriberPort, DeleteMai
             throw new NonExistsException("MailSubscriber not found");
         }
 
-        springMailSuscriberRepository.deleteByEmail(email);
+        try {
+            springMailSuscriberRepository.deleteByEmail(email);
+        } catch (Exception e) {
+            throw new DeleteException("Error deleting MailSubscriber");
+        }
     }
 
     @Override
-    public void store(MailSuscriber mailSuscriber) throws Exception {
+    public void store(MailSuscriber mailSuscriber) throws StoreException, AlreadyExistsException {
 
         if (mailSuscriber == null) {
             throw new NullPointerException("MailSubscriber is null");
@@ -56,11 +62,15 @@ public class MailSubscriberAdapter implements StoreMailSubscriberPort, DeleteMai
         String token = jwtService.createJwtTokenEmail(mailSuscriber.getEmail());
         mailSuscriber.setToken(token);
 
-        springMailSuscriberRepository.save(MailSuscriberMapper.mapToEntity(mailSuscriber));
+        try {
+            springMailSuscriberRepository.save(MailSuscriberMapper.mapToEntity(mailSuscriber));
+        } catch (Exception e) {
+            throw new StoreException("Error storing MailSubscriber");
+        }
     }
 
     @Override
-    public MailSuscriber getMailSuscriber(String email) {
+    public MailSuscriber getMailSuscriber(String email) throws NonExistsException {
         MailSuscriberEntity mailSubscriberEntity = springMailSuscriberRepository.findByEmail(email);
         if (mailSubscriberEntity == null) {
             throw new NonExistsException("MailSubscriber not found");
@@ -73,7 +83,7 @@ public class MailSubscriberAdapter implements StoreMailSubscriberPort, DeleteMai
     }
 
     @Override
-    public List<MailSuscriber> getAllMailSuscriber() {
+    public List<MailSuscriber> getAllMailSubscriber() {
         List<MailSuscriberEntity> mailSubscriberEntities = springMailSuscriberRepository.findAll();
         return mailSubscriberEntities.stream().map(MailSuscriberMapper::mapToDomain).toList();
     }

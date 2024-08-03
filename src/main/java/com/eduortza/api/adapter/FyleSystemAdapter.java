@@ -19,7 +19,7 @@ public class FyleSystemAdapter implements FilePort {
     private String path;
 
     @Override
-    public String saveFile(File file) {
+    public String saveFile(File file) throws FileManagerException {
         createDirectoryIfNotExists(path);
         String uniqueFileName = UUID.randomUUID().toString() + "_" + file.getName();
         try {
@@ -46,7 +46,7 @@ public class FyleSystemAdapter implements FilePort {
         }
     }
 
-    public File createTempFile(MultipartFile file) {
+    public File createTempFile(MultipartFile file) throws FileManagerException {
         try {
             Path tempDir = Files.createTempDirectory("temp-dir");
             Path tempFile = tempDir.resolve(file.getOriginalFilename());

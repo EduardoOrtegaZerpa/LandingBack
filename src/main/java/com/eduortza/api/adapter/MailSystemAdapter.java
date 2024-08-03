@@ -1,5 +1,6 @@
 package com.eduortza.api.adapter;
 
+import com.eduortza.api.application.exception.MailException;
 import com.eduortza.api.application.port.out.MailPort;
 import com.eduortza.api.domain.BlogPost;
 import com.eduortza.api.domain.MailSuscriber;
@@ -36,17 +37,21 @@ public class MailSystemAdapter implements MailPort {
     }
 
     @Override
-    public void sendMail(String from, String subject, String body) {
+    public void sendMail(String from, String subject, String body) throws MailException {
         SimpleMailMessage mail = new SimpleMailMessage();
         mail.setFrom(from);
         mail.setTo("eduardo@eduortza.com");
         mail.setSubject(subject);
         mail.setText(body);
 
-        javaMailSender.send(mail);
+        try {
+            javaMailSender.send(mail);
+        } catch (Exception e) {
+            throw new MailException("Error sending mail");
+        }
     }
 
-    public void sendMailTo(String to, String subject, String content) {
+    public void sendMailTo(String to, String subject, String content) throws MailException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, "utf-8");
 
@@ -56,18 +61,18 @@ public class MailSystemAdapter implements MailPort {
             messageHelper.setSubject(subject);
             messageHelper.setText(content, true);
         } catch (MessagingException e) {
-            throw new RuntimeException("Error sending mail");
+            throw new MailException("Error sending mail");
         }
 
         try {
             javaMailSender.send(mimeMessage);
         } catch (Exception e) {
-            throw new RuntimeException("Error sending mail");
+            throw new MailException("Error sending mail");
         }
     }
 
 
-    public String generateBlogHtmlWithToken(BlogPost blogPost, String token) {
+    public String generateBlogHtmlWithToken(BlogPost blogPost, String token) throws MailException {
         String unsubscribeUrl = baseUrl + "/unsubscribe/" + token;
         String frontendBlogUrl = frontendUrl + "/blog/" + blogPost.getId();
 
@@ -76,9 +81,9 @@ public class MailSystemAdapter implements MailPort {
             ClassPathResource resource = new ClassPathResource("templates/blog-post.html");
             template = new String(FileCopyUtils.copyToByteArray(resource.getInputStream()), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new RuntimeException("Error loading template");
+            throw new MailException("Error loading template");
         } catch (Exception e) {
-            throw new RuntimeException("Error loading template");
+            throw new MailException("Error loading template");
         }
 
         return template

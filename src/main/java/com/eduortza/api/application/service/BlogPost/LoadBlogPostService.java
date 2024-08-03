@@ -23,10 +23,9 @@ public class LoadBlogPostService implements LoadBlogPostPort {
         try {
             return getBlogPostPort.get(id);
         } catch (NonExistsException e) {
-            throw new LoadingException("BlogPost with id " + id + " does not exist", e);
-        }
-        catch (Exception e) {
-            throw new LoadingException("Error while trying to load from Database", e);
+            throw new NonExistsException("BlogPost with id " + id + " does not exist", e);
+        } catch (Exception e) {
+            throw new LoadingException("Error while trying to load from Database: " + e.getMessage(), e);
         }
     }
 
@@ -36,7 +35,7 @@ public class LoadBlogPostService implements LoadBlogPostPort {
         try {
             return getBlogPostPort.getAll();
         } catch (Exception e) {
-            throw new LoadingException("Error while trying to load from Database", e);
+            throw new LoadingException("Error while trying to load from Database: " + e.getMessage(), e);
         }
     }
 }

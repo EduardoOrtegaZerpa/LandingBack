@@ -47,7 +47,7 @@ public class ModifyTrajectoryService implements ModifyTrajectoryPort {
             updateTrajectoryPort.updateTrajectory(trajectory);
             return trajectory;
         } catch (NonExistsException e) {
-            throw new StoreException("Trajectory with id " + trajectory.getId() + " does not exist", e);
+            throw new NonExistsException("Trajectory with id " + trajectory.getId() + " does not exist", e);
         }
         catch (Exception e) {
             throw new StoreException("Error while trying to store in Database", e);

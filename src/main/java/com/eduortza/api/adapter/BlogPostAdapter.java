@@ -5,6 +5,8 @@ import com.eduortza.api.adapter.exception.NonExistsException;
 import com.eduortza.api.adapter.out.persistence.entities.BlogPostEntity;
 import com.eduortza.api.adapter.out.persistence.mappers.BlogPostMapper;
 import com.eduortza.api.adapter.out.persistence.repository.SpringBlogRepository;
+import com.eduortza.api.application.exception.DeleteException;
+import com.eduortza.api.application.exception.StoreException;
 import com.eduortza.api.application.port.out.BlogPost.DeleteBlogPostPort;
 import com.eduortza.api.application.port.out.BlogPost.GetBlogPostPort;
 import com.eduortza.api.application.port.out.BlogPost.StoreBlogPostPort;
@@ -24,20 +26,29 @@ public class BlogPostAdapter implements StoreBlogPostPort, UpdateBlogPostPort, D
     }
     
     @Override
-    public void delete(long id) {
+    public void delete(long id) throws NonExistsException, DeleteException {
         if (!springBlogRepository.existsById(id)) {
             throw new NonExistsException("BlogPost with id " + id + " does not exist");
         }
-        springBlogRepository.deleteById(id);
+
+        try {
+            springBlogRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new DeleteException("Error deleting BlogPost entity with id " + id);
+        }
     }
 
     @Override
-    public void deleteAll() {
-        springBlogRepository.deleteAll();
+    public void deleteAll() throws DeleteException {
+        try{
+            springBlogRepository.deleteAll();
+        } catch (Exception e) {
+            throw new DeleteException("Error deleting all BlogPost entities");
+        }
     }
 
     @Override
-    public BlogPost get(long id) {
+    public BlogPost get(long id) throws NonExistsException {
         return springBlogRepository.findById(id)
                 .map(BlogPostMapper::mapToDomain)
                 .orElseThrow(() -> new NonExistsException("BlogPost with id " + id + " does not exist"));
@@ -51,7 +62,7 @@ public class BlogPostAdapter implements StoreBlogPostPort, UpdateBlogPostPort, D
     }
 
     @Override
-    public BlogPost store(BlogPost blogPost) {
+    public BlogPost store(BlogPost blogPost) throws AlreadyExistsException, StoreException {
 
         if (blogPost == null) {
             throw new NullPointerException("BlogPost is null");
@@ -61,12 +72,17 @@ public class BlogPostAdapter implements StoreBlogPostPort, UpdateBlogPostPort, D
             throw new AlreadyExistsException("BlogPost with id " + blogPost.getId() + " already exists");
         }
 
-        BlogPostEntity blogPostEntity = springBlogRepository.save(BlogPostMapper.mapToEntity(blogPost));
+        BlogPostEntity blogPostEntity;
+        try {
+            blogPostEntity = springBlogRepository.save(BlogPostMapper.mapToEntity(blogPost));
+        } catch (Exception e) {
+            throw new StoreException("Error storing BlogPost");
+        }
         return BlogPostMapper.mapToDomain(blogPostEntity);
     }
 
     @Override
-    public void update(BlogPost blogPost) {
+    public void update(BlogPost blogPost) throws NonExistsException, StoreException {
         if (blogPost == null) {
             throw new NullPointerException("BlogPost is null");
         }
@@ -75,6 +91,10 @@ public class BlogPostAdapter implements StoreBlogPostPort, UpdateBlogPostPort, D
             throw new NonExistsException("BlogPost with id " + blogPost.getId() + " does not exist");
         }
 
-        springBlogRepository.save(BlogPostMapper.mapToEntity(blogPost));
+        try{
+            springBlogRepository.save(BlogPostMapper.mapToEntity(blogPost));
+        } catch (Exception e) {
+            throw new StoreException("Error updating BlogPost");
+        }
     }
 }
